@@ -15,12 +15,12 @@ function plot5steps(field, variable, trial, subject, direction)
 %the ankle, knee, or hip joints there will be yaxis labels for other
 %variables yaxis labels will be blank
 
-load(['p',num2str(subject),'_5stepsdata.mat'],'data')
+load(['p',num2str(subject),'_5StridesData.mat'],'data')
 
 %% extract heel strikes 
 % Extract grf data from data file
-grfl = data(trial).grf.force1;
-grfr = data(trial).grf.force2;       
+grfl = data(trial).Force.force1;
+grfr = data(trial).Force.force2;       
 
 % Get heelstrikes
 [hsl, tol, hsr, tor] = invDynGrid_getHS_TO(grfl,grfr, 20);
