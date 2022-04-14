@@ -21,7 +21,13 @@ for subj = subjects
     
     % go to subject folder
     %subjname = char(subjnames(subj));
-    folder=(strcat(datafolder,'\P ',subjnames(subj),'exportedfiles'))
+    
+    if ispc
+        folder=(strcat(datafolder,'\P ',subjnames(subj),'exportedfiles'))
+    elseif ismac
+        folder=(strcat(datafolder,'/P ',subjnames(subj),'exportedfiles'))
+    end
+    
     cd(folder{1,1})
     for trial = trials
         disp(trial)
