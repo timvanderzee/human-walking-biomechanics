@@ -57,5 +57,5 @@ subj=input('Which subject (from 1-9) are you interested in?');
 %% look at specific subject
 % one subject, one trial 
 plot5steps(typename, variablename, trial, subj, col)
-GRFplot(datafolder, codefolder, subj, trial)
+GRFplot(subj, trial)
 

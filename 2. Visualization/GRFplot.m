@@ -1,12 +1,9 @@
-function GRFplot(datafolder, codefolder, subjects, trials)
+function GRFplot(subjects, trials)
 
 % Figure has 3 subplots for GRF. It plots the left and right
 % leg one on top of the other and the 3 subplots are the GRF in the
 % medial/lateral, anterior/posterior, and vertical directions.
-
-% Inputs: datafolder- a string that has the full path name to the folder 
-% where the data is located
-% code folder- a string specifying where this code is. 
+ 
 % Subjects can be a single number from 1 to 9 or an array including any
 % combinations of subjects from 1 to 9
 % Trials can be a single trial number from 1:33 or an array of trials
@@ -14,9 +11,6 @@ function GRFplot(datafolder, codefolder, subjects, trials)
 
 
 %% 5 steps analysis
-addpath(genpath(datafolder));
-addpath(genpath(codefolder));
-cd(datafolder);
 
 %loops over subject and loads subject's data and then loops over trials
 for subj = subjects
