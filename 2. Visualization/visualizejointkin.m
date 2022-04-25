@@ -24,10 +24,10 @@ Pjoint_pc = nan(npoints, subjects(end), 2);
 for subj = subjects
     
     disp(strcat(['Loading data for Subject:', ' ', num2str(subj)]))
-    load(['p',num2str(subj),'_5stepsdata.mat'],'data')
+    load(['p',num2str(subj),'_5Stridesdata.mat'],'data')
 
         
-        if isempty(data(trials(trial)).grf)==1
+        if isempty(data(trials(trial)).Force)==1
             continue
         else        
 %% Define joint Moment, Angle, and Power for the given joint
@@ -51,8 +51,8 @@ for subj = subjects
             
             %% extract heel strikes
             % Extract GRF variable
-            GRFL=[data(trials(trial)).grf.force1(:,1), data(trials(trial)).grf.force1(:,2), data(trials(trial)).grf.force1(:,3)];
-            GRFR=[data(trials(trial)).grf.force2(:,1), data(trials(trial)).grf.force2(:,2), data(trials(trial)).grf.force2(:,3)];
+            GRFL=[data(trials(trial)).Force.force1(:,1), data(trials(trial)).Force.force1(:,2), data(trials(trial)).Force.force1(:,3)];
+            GRFR=[data(trials(trial)).Force.force2(:,1), data(trials(trial)).Force.force2(:,2), data(trials(trial)).Force.force2(:,3)];
 
             % Get heelstrikes
             [hsl, tol, hsr, tor] = invDynGrid_getHS_TO(GRFL, GRFR,40);

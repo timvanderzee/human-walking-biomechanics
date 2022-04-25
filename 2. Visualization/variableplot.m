@@ -33,8 +33,8 @@ trials=trialsort(:,2);
 
 %% Load data and define column of interest within the variable of interest
 
-for subject= 1:9 %Loops over all subjects that have 5 step data files
-    load ((strcat('p', num2str(subject), '_5StepsData.mat')))
+for subject= 1:9 %Loops over all subjects that have 5 strides data files
+    load ((strcat('p', num2str(subject), '_5StridesData.mat')))
     
     if subject==1
         varsize=size(data(trials(1)).(field).(variable));
@@ -61,13 +61,13 @@ for subject= 1:9 %Loops over all subjects that have 5 step data files
 
     for trial=1:length(trials) %Loops over trials
         
-        if isempty(data(trials(trial)).grf.force1)==1 
+        if isempty(data(trials(trial)).Force)==1 
             continue
-        elseif isempty(data(trials(trial)).grf.force2)==1 
+        elseif isempty(data(trials(trial)).Force.force1)==1 
             continue
         else 
-            GRFL=[data(trials(trial)).grf.force1(:,1), data(trials(trial)).grf.force1(:,2), data(trials(trial)).grf.force1(:,3)];
-            GRFR=[data(trials(trial)).grf.force2(:,1), data(trials(trial)).grf.force2(:,2), data(trials(trial)).grf.force2(:,3)];
+            GRFL=[data(trials(trial)).Force.force1(:,1), data(trials(trial)).Force.force1(:,2), data(trials(trial)).Force.force1(:,3)];
+            GRFR=[data(trials(trial)).Force.force2(:,1), data(trials(trial)).Force.force2(:,2), data(trials(trial)).Force.force2(:,3)];
         end   
         % Get heelstrikes for the left and right (hsl, hsr)
         [hsl, tol, hsr, tor] = invDynGrid_getHS_TO(GRFL, GRFR,40);
