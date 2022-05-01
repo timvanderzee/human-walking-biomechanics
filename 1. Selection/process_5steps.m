@@ -1,10 +1,11 @@
-function [] = process_5steps(datafolder, subjects, trials)
+function [] = process_5steps(subjects, trials)
 % Loads:
 % 1. 5 steps indices
 % 2. Raw data that is outputted from visual3D
 % Saves: 5 steps data stored for each participant in a struct
+% Make sure the data and the heelstrike files are in the path and that the
+% cd contains the subjects' raw data file folders
 
-addpath(genpath(datafolder))
 load('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
 subjnames = {'1' ,'2', '3', '4', '5', '6', '7', '8', '9', '10'};
 
@@ -16,17 +17,16 @@ for subj = subjects
     disp(subj)
 
     % start with what you have
-    cd(datafolder)
+    %cd(datafolder)
     %load(['p',num2str(subj),'_5steps_data'], 'data')
     
-    % go to subject folder
-    %subjname = char(subjnames(subj));
-    
-    if ispc
-        folder=(strcat(datafolder,'\P ',subjnames(subj),'exportedfiles'))
-    elseif ismac
-        folder=(strcat(datafolder,'/P ',subjnames(subj),'exportedfiles'))
-    end
+
+   %No longer need this section? 
+%     if ispc
+%         folder=(strcat(datafolder,'\P ',subjnames(subj),'exportedfiles'))
+%     elseif ismac
+%         folder=(strcat(datafolder,'/P ',subjnames(subj),'exportedfiles'))
+%     end
     
     cd(folder{1,1})
     for trial = trials
@@ -334,7 +334,7 @@ for subj = subjects
         end
     end
 
-    cd(datafolder)
+    %cd(datafolder)
     save(['p',num2str(subj),'_5StridesData'], 'data')
 end
 end
