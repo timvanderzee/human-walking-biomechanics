@@ -1,6 +1,6 @@
 close all; clear all;
 
-cd('C:\Users\tim.vanderzee\OneDrive - University of Calgary\2. Soft tissue - JEB\processed_data')
+%cd('C:\Users\tim.vanderzee\OneDrive - University of Calgary\2. Soft tissue - JEB\processed_data')
 
 %%
 close all
