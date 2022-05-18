@@ -3,13 +3,12 @@ clear all; close all; clc
 %% Rename as example_plotting.m, add plot3x3 function
 
 % add code folder to datapath
-scriptname = 'examplescript.m';
-scriptfile = which(scriptname);
+scriptfile = which('examplescript.m');
 scriptfolder = scriptfile(1:(end-33));
 addpath(genpath(scriptfolder));
 cd(scriptfolder)
 
-% ALSO MAKE SURE YOU ADD THE DATAFOLDER TO PATH!
+% MAKE SURE YOU ADD THE DATAFOLDER TO PATH BEFORE RUNNING THE SCRIPT!
 
 %% choose variable
 % in this section of code define the following 4 variables
@@ -29,23 +28,24 @@ experiment = 'preferred walking';
 %% look-up variable and trials. 
 % Variable name is a string continaing the name of the variable which is
 % found in the data files
-% typename is a sting containing the name of the field where the variable
+% 
+% typename is a string containing the name of the field where the variable
 % can be found
-% trials is a variable that contains the trials numbers for trials
+% 
+% trials is a variable that contains the trial numbers for trials
 % matching the experiment defined above. These trials are returned from
 % lowest speed to highest speed
 
 [variablename, typename, trials] = lookup_variable_name(variable_type, leg, joint, experiment);
 
-
-%% calls on functions to look at subject means for a number of trials
+%% calls on functions to look at subjects' means for several trials
 % col contains the column of data that will be plotted in the following 2 
 % sections
 col=variableplot(typename, variablename, trials);
 trial=input('What trial are you interested in?  [1-33]');
+
 % trial is a single number for the trial that will be plotted in the
 % following 2 sections
-
 
 %% calls on function to look at each subjects' data for a single trial
 
@@ -53,7 +53,7 @@ visualizejointkin(trial, joint, col)
 subj=input('Which subject (from 1-9) are you interested in?');
 
 % subj is a single number for the subject that will be plotted in the
-% following section
+% following section/follwoing 3 figures
 
 
 %% look at specific subject
@@ -134,6 +134,7 @@ trials=trialsort(:,2);
 %Load data and define column of interest within the variable of interest
 
 for subject= 1:9 %Loops over all subjects that have 5 strides data files
+    data= [];
     load ((strcat('p', num2str(subject), '_5StridesData.mat')))
     
     if subject==1
@@ -273,7 +274,7 @@ Pjoint_pc = nan(npoints, subjects(end), 2);
 
 %Loop over subjects and load subject data 
 for subj = subjects
-    
+    data=[];
     disp(strcat(['Loading data for Subject:', ' ', num2str(subj)]))
     load(['p',num2str(subj),'_5Stridesdata.mat'],'data')
 
@@ -477,6 +478,7 @@ function plot5steps(field, variable, trial, subject, direction)
 %the ankle, knee, or hip joints there will be yaxis labels for other
 %variables yaxis labels will be blank
 
+data=[];
 load(['p',num2str(subject),'_5StridesData.mat'],'data')
 
 % extract heel strikes 
@@ -563,7 +565,8 @@ function GRFplot(subjects, trials)
 
 %loops over subject and loads subject's data and then loops over trials
 for subj = subjects
-        load(['p',num2str(subj),'_5StridesData'])
+    data=[];
+    load(['p',num2str(subj),'_5StridesData'])
     for trial = trials
 % Figure: 5 step figure: ground reaction forces
 
@@ -610,38 +613,38 @@ function trialnames=lookup_trial_names(trials)
 %returns a cell array with the trial descriptions for each trial in the
 %input variable: 'trials'
 
-names={'0.7 m/s constant step length',
-'0.7 m/s preferred',
-'0.7 m/s constant step frequency',
-'0.9 m/s constant step length',
-'0.9 m/s preferred',
-'0.9 m/s constant step frequency',
-'1.1 m/s constant step length',
-'1.1 m/s preferred',
-'1.1 m/s constant step frequency',
-'1.6 m/s constant step frequency',
-'1.6 m/s preferred',
-'1.6 m/s constant step length',
-'1.8 m/s constant step frequency',
-'1.8 m/s preferred',
-'1.8 m/s constant step length',
-'2.0 m/s preferred',
-'1.25 m/s lowest step frequency',
-'1.25 m/s lower step frequency',
-'1.25 m/s low step frequency',
-'1.25 m/s preferred',
-'1.25 m/s preferred',
-'1.25 m/s preferred',
-'1.25 m/s high step frequency',
-'1.25 m/s higher step frequency',
-'1.25 m/s highest step frequency',
-'1.25 m/s zero step width',
-'1.25 m/s 10 cm step width',
-'1.25 m/s 20 cm step width',
-'1.25 m/s 30 cm step width',
-'1.25 m/s 40 cm step width',
-'1.40 m/s constant step length',
-'1.40 m/s preferred',
+names={'0.7 m/s constant step length'
+'0.7 m/s preferred'
+'0.7 m/s constant step frequency'
+'0.9 m/s constant step length'
+'0.9 m/s preferred'
+'0.9 m/s constant step frequency'
+'1.1 m/s constant step length'
+'1.1 m/s preferred'
+'1.1 m/s constant step frequency'
+'1.6 m/s constant step frequency'
+'1.6 m/s preferred'
+'1.6 m/s constant step length'
+'1.8 m/s constant step frequency'
+'1.8 m/s preferred'
+'1.8 m/s constant step length'
+'2.0 m/s preferred'
+'1.25 m/s lowest step frequency'
+'1.25 m/s lower step frequency'
+'1.25 m/s low step frequency'
+'1.25 m/s preferred'
+'1.25 m/s preferred'
+'1.25 m/s preferred'
+'1.25 m/s high step frequency'
+'1.25 m/s higher step frequency'
+'1.25 m/s highest step frequency'
+'1.25 m/s zero step width'
+'1.25 m/s 10 cm step width'
+'1.25 m/s 20 cm step width'
+'1.25 m/s 30 cm step width'
+'1.25 m/s 40 cm step width'
+'1.40 m/s constant step length'
+'1.40 m/s preferred'
 '1.40 m/s constant step frequency'};
 
 for i=1:length(trials)
@@ -661,6 +664,7 @@ function plot3x3(s,t)
 trial=t;
 subj=s;
 
+data=[];
 load(strcat('p', num2str(subj), '_5StridesData.mat'))
     
     %% Extract grfs for each trial
