@@ -1,7 +1,7 @@
 %% analyse_biomechanics_v2
 % required functions:
 % 
-
+%% Rename as analyse_biomechanics.m
 
 vwalks = [.7 .7 .7 .9 .9 .9 1.1 1.1 1.1 1.6 1.6 1.6 1.8 1.8 1.8 2.0...
     1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.4 1.4 1.4]; % m/s
@@ -331,6 +331,8 @@ missing = [c r];
 %% Saving
 save('Wsoft')
 
+
+%% Functions
 function [Pper] = CalcPeripheralPower(segmentvelocity, rotenergy, segmenmass, vcom_mo, fsmo)
 
 Etrans = nan(length(vcom_mo),6);
@@ -388,8 +390,6 @@ jointvel_wrt_proxsegmentcom_loc = grad5(jointpos_wrt_proxsegmentcom_loc, 1/fs);
 % And calculate power as the element-wise product with force
 transjointpower = fjoint_loc .* jointvel_wrt_proxsegmentcom_loc;
 end
- 
-%% Functions
 
 %% comvelocityevents Function
 
