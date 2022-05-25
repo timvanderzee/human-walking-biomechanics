@@ -3,6 +3,9 @@ function select_5steps(subjects, trials)
 % add datafolder to datapath
 
 % start with what we have already and add to that
+repopath=which('5steps_heelstrikes.mat')
+cd(repopath(1:(end-23)))
+
 load('5steps_indices.mat','hsl','start')
 
 for subj = subjects
@@ -155,22 +158,13 @@ for subj = subjects
         start(subj,trial) = idx(1);
 
 
-        save('5steps_indices.mat','hsl','start')
-
-        load('5steps_indices.mat','hsl','start')
         load('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
 
 
  %% Find new heelstrike
-        grfl = data(trials(trial)).Force.force1(start(subj,trials(trial)):end,1:3);
-        grfr = data(trials(trial)).Force.force2(start(subj,trials(trial)):end,1:3);
-
-        % Threshold at 20 N
-        grfl(grfl(:,3)<20,:) = 0;
-        grfr(grfr(:,3)<20,:) = 0;  
 
         % find hsl with different method            
-        [LHS, ~, RHS, ~] = invDynGrid_getHS_TO(grfl, grfr, 5);
+        [LHS, ~, RHS, ~] = invDynGrid_getHS_TO(grflt, grfrt, 5);
 
         % make sure they are unique
         LHS = unique(LHS);
@@ -185,12 +179,12 @@ for subj = subjects
         hsr_first = RHS_future(1);
 
         figure ('name', strcat(['subject: ', num2str(subj), ', trial: ', num2str(trials(trial))]));
-        plot(grfl(:,3)); hold on
+        plot(grflt(:,3)); hold on
         plot(hsl(subj,trial), 0, 'bo')
         plot(LHS, zeros(size(LHS)), 'bx')
         plot(hsl_close, [0 0], 'b+')
 
-        plot(grfr(:,3)); hold on
+        plot(grfrt(:,3)); hold on
 %             plot(hsl(subj,trial), 0, 'o')
         plot(RHS, zeros(size(RHS)), 'rx')
         plot(hsr_first, [0 0], 'r+')
@@ -201,8 +195,8 @@ for subj = subjects
     end
 end
     
-
-save('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
+save('5steps_indices_NEW.mat','hsl','start')
+save('5steps_heelstrikes_NEW.mat','hsl_grf','hsr_grf')
 
 function [] = plotperstride(x, hsl)
 
