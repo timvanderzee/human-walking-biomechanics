@@ -1,10 +1,10 @@
 function select5steps(subjects, trials)
 
+%Add the datafolder to the human-walking-biomechanics folder
 % add datafolder to datapath
-datafile = which('p1export_T01.mat');
-%scriptfolder = scriptfile(1:(end-33));
-addpath(genpath(scriptfolder));
-cd(scriptfolder)
+datafolder=uigetpath([],'select the directory that contains the 10 folders of exported data ans the heelstrike and indices files');
+addpath(genpath(datafolder));
+cd(datafolder)
 
 % start with what we have already and add to that
 load('5steps_indices.mat','hsl','start')
