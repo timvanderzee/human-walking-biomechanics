@@ -1,4 +1,11 @@
 function [] = process_5steps(subjects, trials)
+
+%Make sure dtafolder is added to path before running function
+
+%When running function for subject 9, in the target section of the function
+%remove lines that involve upper body markers (LAC, RAC, LEP, REP, LWR,
+%RWR)
+%
 % Loads:
 % 1. 5 steps indices
 % 2. Raw data that is outputted from visual3D
@@ -57,6 +64,7 @@ for subj = subjects
                 r_hip_power{1} = nan(size(r_kne_power{1}));
             end
            
+            data=[];
             
             %% Store Force Platform Data
             data(trial).Platform.ForcePlatformOrigin = [ForcePlatformOrigin{1}];

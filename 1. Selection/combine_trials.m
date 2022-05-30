@@ -1,6 +1,8 @@
 function combine_trials(datafolder, subjects, trials)
+%Add datafolder to path before running funtion
+%Be sure to specify trials and exclude the trials that do not exist for the
+%selected subject
 
-addpath(genpath(datafolder))
 subjnames = {'1' ,'2', '3', '4', '5', '6', '7', '8', '9', '10'};
 
 
@@ -30,6 +32,8 @@ for subj = subjects
         
         if  ~isempty(force1)
         
+            data=[];
+            
             %% Store Force Platform Data
             data(trial).Platform.ForcePlatformOrigin = [ForcePlatformOrigin{1}];
             data(trial).Platform.ForcePlatformCorners = [ForcePlatformCorners{1}];

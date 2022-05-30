@@ -1,12 +1,14 @@
-function select_5steps(subjects, trials)
+function select_5steps(subjects, trials, new_indices)
 
 % add datafolder to datapath
+%set new_indices to 1 if you want to redefine the range of indices for the
+%entire trial, if not set to 0
 
 % start with what we have already and add to that
 repopath=which('5steps_heelstrikes.mat')
 cd(repopath(1:(end-23)))
 
-load('5steps_indices.mat','hsl','start')
+load('5steps_heelstrikes_all4.mat','hsl_grf','hsr_grf','hsl','start')
 
 for subj = subjects
     disp(subj)
@@ -28,22 +30,14 @@ for subj = subjects
         f1= data(trials(trial)).Force.force1;
         f2= data(trials(trial)).Force.force2;
         
-        %ask if hsl exists or not, if it exists use previous range, if not
-        %pop up figure to select heekstrike range
-        if isnan(start(subj, trials(trial)))
-            figure; 
-            plot(f1(1)); hold on; plot(f2{1})
-            xlabel ('Force')
-            ylabel ('Frames')
-            %if isnan(start(subj, trial))
-            [idx,~] = ginput(2);
-            close
-            %idx=both clicks
-            idx = round(idx);
+        if exist('new_indices')==1 & new_indices==1
+           idx = select_indices(f1,f2);
             
         else idx(1)=start(subj, trials(trial));
              idx(2)=length(f1(:,1));
+            
         end
+        
         
         % extract ground reaction force
         grfl = f1(idx(1):idx(2),:);
@@ -65,7 +59,8 @@ for subj = subjects
                sum(data(trials(trial)).Link_Model_Based.r_hip_power(idx_mo(1):idx_mo(2),:),2)];
            
         % extract heelstrikes and toe-offs from grf
-        hsl_new = unique(invDynGrid_getHS_TO(grflt, grfrt, 20));
+        [LHS, ~, RHS, ~] = invDynGrid_getHS_TO(grflt, grfrt, 5);
+        hsl_new = unique(LHS);
         hsl_mo = unique(round(hsl_new/10) + 1); % heelstrikes for mocop (fs_mocop = .1*fs_grf)
         
         %n= #of heelstrikes, if the pre selected heelstrike exists use that
@@ -157,17 +152,9 @@ for subj = subjects
         hsl(subj,trial) = hsl_mid(1);
         start(subj,trial) = idx(1);
 
-
-        load('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
-
-
- %% Find new heelstrike
-
-        % find hsl with different method            
-        [LHS, ~, RHS, ~] = invDynGrid_getHS_TO(grflt, grfrt, 5);
-
-        % make sure they are unique
-        LHS = unique(LHS);
+        
+        
+        %% Find new heelstrike
 
         % first new left heel strike: choose the closest to the first left heel strike
         [~,closest] = min(abs(LHS-hsl(subj,trials(trial))));
@@ -178,16 +165,19 @@ for subj = subjects
         RHS_future = RHS(RHS>hsl_close(2));
         hsr_first = RHS_future(1);
 
+%% Find 5 steps
+
         figure ('name', strcat(['subject: ', num2str(subj), ', trial: ', num2str(trials(trial))]));
         plot(grflt(:,3)); hold on
         plot(hsl(subj,trial), 0, 'bo')
         plot(LHS, zeros(size(LHS)), 'bx')
-        plot(hsl_close, [0 0], 'b+')
-
+        plot(hsl_close, [0 0], 'g.', 'markersize', 7)
+        
         plot(grfrt(:,3)); hold on
 %             plot(hsl(subj,trial), 0, 'o')
         plot(RHS, zeros(size(RHS)), 'rx')
-        plot(hsr_first, [0 0], 'r+')
+        plot(hsr_first, 0, 'm.', 'markersize', 7)
+ 
 
         % ground reaction force heelstrikes
         hsl_grf(subj,trials(trial)) = hsl_close(1) +  start(subj,trials(trial)) -1;
@@ -195,8 +185,19 @@ for subj = subjects
     end
 end
     
-save('5steps_indices_NEW.mat','hsl','start')
-save('5steps_heelstrikes_NEW.mat','hsl_grf','hsr_grf')
+
+save('5steps_heelstrikes_NEW.mat','hsl_grf','hsr_grf','hsl','start')
+
+
+function idx = select_indices(f1,f2);
+figure;
+plot(f1(1)); hold on; plot(f2{1})
+xlabel ('Force')
+ylabel ('Frames')
+[idx,~] = ginput(2);
+close
+idx = round(idx);
+end
 
 function [] = plotperstride(x, hsl)
 
