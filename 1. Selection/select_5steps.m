@@ -173,10 +173,13 @@ for subj = subjects
         plot(LHS, zeros(size(LHS)), 'bx')
         plot(hsl_close, [0 0], 'g.', 'markersize', 7)
         
+        xline(hsl(subj,trial), 'linewidth', 2)
+        xline(hsl_close(2), 'linewidth', 2)
+        
         plot(grfrt(:,3)); hold on
 %             plot(hsl(subj,trial), 0, 'o')
         plot(RHS, zeros(size(RHS)), 'rx')
-        plot(hsr_first, 0, 'm.', 'markersize', 7)
+        %plot(hsr_first, 0, 'm.', 'markersize', 7)
  
 
         % ground reaction force heelstrikes
