@@ -1,6 +1,7 @@
 function select_5steps(subjects, trials, new_indices)
-
 % add datafolder to datapath
+%Use this function to store heelstrikes and indices to later be used by
+%process fucntion
 %set new_indices to 1 if you want to redefine the range of indices for the
 %entire trial, if not set to 0
 
@@ -8,7 +9,7 @@ function select_5steps(subjects, trials, new_indices)
 repopath=which('5steps_heelstrikes.mat')
 cd(repopath(1:(end-23)))
 
-load('5steps_heelstrikes_all4.mat','hsl_grf','hsr_grf','hsl','start')
+load('5steps_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
 
 for subj = subjects
     disp(subj)
@@ -189,11 +190,11 @@ for subj = subjects
 end
     
 
-save('5steps_heelstrikes_NEW.mat','hsl_grf','hsr_grf','hsl','start')
+save('5steps_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
 
 
 function idx = select_indices(f1,f2);
-figure;
+figure();
 plot(f1(1)); hold on; plot(f2{1})
 xlabel ('Force')
 ylabel ('Frames')

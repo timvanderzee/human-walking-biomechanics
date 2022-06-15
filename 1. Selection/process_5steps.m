@@ -1,14 +1,19 @@
 function [] = process_5steps(subjects, trials)
-
-%Make sure dtafolder is added to path before running function
-
+%Add datafolder with the PnExported file folders to path before running funtion
+%INPUTS: 
+    %subjects: specify which subjects to make all strides file, 
+    %ex. subjects=[1:3]
+    % trials: specify which trials to include in all strides files, exclude
+    % missing trials and step width trials
+    % ex. trials= [1:25, 31:33] will exculde step width trials
+    
 %When running function for subject 9, in the target section of the function
 %remove lines that involve upper body markers (LAC, RAC, LEP, REP, LWR,
 %RWR)
-%
+
 % Loads:
-% 1. 5 steps indices
-% 2. Raw data that is outputted from visual3D
+% 1. 5 steps heelstikes
+% 2. Raw data that is exported from visual3D
 % Saves: 5 steps data stored for each participant in a struct
 % Make sure the data and the heelstrike files are in the path and that the
 % cd contains the subjects' raw data file folders
@@ -22,20 +27,16 @@ hsr_grf_mocap = round(hsr_grf/10) + 1;
 
 for subj = subjects
     disp(subj)
-
+    data=[];
     % start with what you have
-    %cd(datafolder)
-    %load(['p',num2str(subj),'_5steps_data'], 'data')
+    load(['p',num2str(subj),'_5steps_data'], 'data')
     
-
-   %No longer need this section? 
-%     if ispc
-%         folder=(strcat(datafolder,'\P ',subjnames(subj),'exportedfiles'))
-%     elseif ismac
-%         folder=(strcat(datafolder,'/P ',subjnames(subj),'exportedfiles'))
-%     end
+    folder=which(['p', num2str(subjnames{subj}), 'export_T03.mat']);
+    folder=[folder(1:(end-17))];
+    cd(folder)
+    ind=strfind(folder, 'R');
+    datafolder=folder(1:ind)
     
-    cd(folder{1,1})
     for trial = trials
         disp(trial)
         
@@ -56,7 +57,7 @@ for subj = subjects
         end
 
         
-        if ~isnan(hsl_grf(subj,trial)) && ~isempty(force1)
+        if ~isnan(hsl_grf(subj,trial)) && ~isempty(force1{1,1})
 
             % if hip is empty
             if isempty(l_hip_power{1})
@@ -64,7 +65,7 @@ for subj = subjects
                 r_hip_power{1} = nan(size(r_kne_power{1}));
             end
            
-            data=[];
+
             
             %% Store Force Platform Data
             data(trial).Platform.ForcePlatformOrigin = [ForcePlatformOrigin{1}];
@@ -342,7 +343,7 @@ for subj = subjects
         end
     end
 
-    %cd(datafolder)
+    cd(datafolder)
     save(['p',num2str(subj),'_5StridesData'], 'data')
 end
 end

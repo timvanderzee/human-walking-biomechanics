@@ -1,21 +1,29 @@
-function combine_trials(datafolder, subjects, trials)
-%Add datafolder to path before running funtion
-%Be sure to specify trials and exclude the trials that do not exist for the
-%selected subject
+function combine_trials(subjects, trials)
+%Add datafolder with the PnExported file folders to path before running funtion
+%INPUTS: 
+    %subjects: specify which subjects to make all strides file, 
+    %ex. subjects=[1:3]
+    % trials: specify which trials to include in all strides files, exclude
+    % missing trials and step width trials
+    % ex. trials= [1:25, 31:33] will exculde step width trials
+    
+%When running function for subject 9, in the target section of the function
+%remove lines that involve upper body markers (LAC, RAC, LEP, REP, LWR,
+%RWR)
 
 subjnames = {'1' ,'2', '3', '4', '5', '6', '7', '8', '9', '10'};
 
-
 for subj = subjects
     disp(subj)
+    data=[];
     
     % go to subject folder
-    subjname = char(subjnames(subj));
-    cd(datafolder)
-    
-    
-    folder=(strcat(datafolder,'\P ', subjnames(subj),'exportedfiles'))
-    cd(folder{1,1})
+
+    folder=which(['p', num2str(subjnames{subj}), 'export_T03.mat']);
+    folder=[folder(1:(end-17))];
+    cd(folder)
+    ind=strfind(folder, 'R');
+    datafolder=folder(1:ind)
     for trial = trials
         disp(trial)
         
@@ -30,9 +38,7 @@ for subj = subjects
         else, continue
         end
         
-        if  ~isempty(force1)
-        
-            data=[];
+        if  ~isempty(force1{1,1})
             
             %% Store Force Platform Data
             data(trial).Platform.ForcePlatformOrigin = [ForcePlatformOrigin{1}];
