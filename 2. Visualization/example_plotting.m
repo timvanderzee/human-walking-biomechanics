@@ -3,8 +3,8 @@ clear all; close all; clc
 %% Rename as example_plotting.m, add plot3x3 function
 
 % add code folder to datapath
-scriptfile = which('examplescript.m');
-scriptfolder = scriptfile(1:(end-33));
+scriptfile = which('example_plotting.m');
+scriptfolder = scriptfile(1:(end-35));
 addpath(genpath(scriptfolder));
 cd(scriptfolder)
 
@@ -42,7 +42,7 @@ experiment = 'preferred walking';
 % col contains the column of data that will be plotted in the following 2 
 % sections
 col=variableplot(typename, variablename, trials);
-trial=input('What trial are you interested in?  [1-33]');
+trial=input('What trial are you interested in?  (1-33 excluding step width trials(26-30))');
 
 % trial is a single number for the trial that will be plotted in the
 % following 2 sections
@@ -164,8 +164,6 @@ for subject= 1:9 %Loops over all subjects that have 5 strides data files
         
         if isempty(data(trials(trial)).Force)==1 
             continue
-        elseif isempty(data(trials(trial)).Force.force1)==1 
-            continue
         else 
             GRFL=[data(trials(trial)).Force.force1(:,1), data(trials(trial)).Force.force1(:,2), data(trials(trial)).Force.force1(:,3)];
             GRFR=[data(trials(trial)).Force.force2(:,1), data(trials(trial)).Force.force2(:,2), data(trials(trial)).Force.force2(:,3)];
@@ -222,7 +220,7 @@ if isempty(strfind(variable, 'ank'))==0
 elseif isempty(strfind(variable, 'kne'))==0
     jname= 'Knee';
 elseif isempty(strfind(variable, 'hip'))==0
-    janme= 'Hip';
+    jname= 'Hip';
 end
 
 % get trialsname based on trials
