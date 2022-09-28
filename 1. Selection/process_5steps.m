@@ -1,4 +1,13 @@
-function [] = process_5steps(subjects, trials)
+clear all; close all; clc
+
+%% Settings
+subjects = 1;
+trials = 1:33;
+
+import_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\Exported';
+export_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\5 Strides Data files';
+
+%%
 %Add datafolder with the PnExported file folders to path before running funtion
 %INPUTS: 
     %subjects: specify which subjects to make all strides file, 
@@ -18,6 +27,7 @@ function [] = process_5steps(subjects, trials)
 % Make sure the data and the heelstrike files are in the path and that the
 % cd contains the subjects' raw data file folders
 
+cd(import_folder)
 load('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
 subjnames = {'1' ,'2', '3', '4', '5', '6', '7', '8', '9', '10'};
 
@@ -28,14 +38,12 @@ hsr_grf_mocap = round(hsr_grf/10) + 1;
 for subj = subjects
     disp(subj)
     data=[];
-    % start with what you have
-    load(['p',num2str(subj),'_5steps_data'], 'data')
     
-    folder=which(['p', num2str(subjnames{subj}), 'export_T03.mat']);
-    folder=[folder(1:(end-17))];
-    cd(folder)
-    ind=strfind(folder, 'R');
-    datafolder=folder(1:ind)
+    % start with what you have
+    cd(import_folder)
+    if exist(['p',num2str(subj),'_5steps_data'], 'file')
+        load(['p',num2str(subj),'_5steps_data'], 'data')
+    end
     
     for trial = trials
         disp(trial)
@@ -343,8 +351,8 @@ for subj = subjects
         end
     end
 
-    cd(datafolder)
+    cd(export_folder)
     save(['p',num2str(subj),'_5StridesData'], 'data')
 end
-end
+
 

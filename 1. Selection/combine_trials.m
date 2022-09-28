@@ -1,11 +1,20 @@
-function combine_trials(subjects, trials)
+clear all; close all; clc
+
+%% Settings
+subjects = 1;
+trials = 1:33;
+
+import_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\Exported';
+export_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\All Strides';
+
+%%
 %Add datafolder with the PnExported file folders to path before running funtion
-%INPUTS: 
-    %subjects: specify which subjects to make all strides file, 
-    %ex. subjects=[1:3]
-    % trials: specify which trials to include in all strides files, exclude
-    % missing trials and step width trials
-    % ex. trials= [1:25, 31:33] will exculde step width trials
+
+%subjects: specify which subjects to make all strides file, 
+%ex. subjects=[1:3]
+% trials: specify which trials to include in all strides files, exclude
+% missing trials and step width trials
+% ex. trials= [1:25, 31:33] will exculde step width trials
     
 %When running function for subject 9, in the target section of the function
 %remove lines that involve upper body markers (LAC, RAC, LEP, REP, LWR,
@@ -17,13 +26,9 @@ for subj = subjects
     disp(subj)
     data=[];
     
-    % go to subject folder
-
-    folder=which(['p', num2str(subjnames{subj}), 'export_T03.mat']);
-    folder=[folder(1:(end-17))];
-    cd(folder)
-    ind=strfind(folder, 'R');
-    datafolder=folder(1:ind)
+    % go to import folder
+    cd(import_folder)
+    
     for trial = trials
         disp(trial)
         
@@ -315,11 +320,11 @@ for subj = subjects
         end
     end
 
-    cd(datafolder)
+    cd(export_folder)
     save(['p',num2str(subj),'_AllStridesData.mat'], 'data', '-v7.3')
     disp(data)
 end
-end
+
 
 
 

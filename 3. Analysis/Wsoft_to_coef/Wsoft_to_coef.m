@@ -1,4 +1,5 @@
-% Wsoft_to_coef(datafolder)
+clear all; close all; clc
+cd('D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated')
 
 % datafolder = cd;
 load('Wsoft.mat')

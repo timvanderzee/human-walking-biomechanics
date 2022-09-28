@@ -1,6 +1,12 @@
-%% analyse_biomechanics_v2
-% required functions:
-% 
+clear all; close all; clc
+%% Settings
+subjects = 1:9;
+trials = 1:33;
+
+import_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Level 3 - MATLAB files\5 Strides Data files';
+% import_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\5 Strides Data files';
+export_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\';
+
 %% Rename as analyse_biomechanics.m
 
 vwalks = [.7 .7 .7 .9 .9 .9 1.1 1.1 1.1 1.6 1.6 1.6 1.8 1.8 1.8 2.0...
@@ -53,8 +59,10 @@ FTI = nan(nt,ns,nl);
 %% loop
 
 %for subj=[3]
-for subj = 1:9
+for subj = subjects
     data = [];
+    
+    cd(import_folder)
     load(['p',num2str(subj),'_5StridesData.mat'])
     
     disp(['subj:', num2str(subj)])
@@ -117,7 +125,7 @@ for trial = [1:25,31:33]
     
     p = nan(3,2);
     for i = 1:3
-        p(i,:) = polyfit(hsl(1):hsl(end), vcom_raw(hsl(1):hsl(end),i), 1);
+        p(i,:) = polyfit(hsl(1):hsl(end), vcom_raw(hsl(1):hsl(end),i)', 1);
         vcom(:,i) = vcom_raw(:,i) - polyval(p(i,:), 1:length(tgrf))';
     end
     
@@ -329,7 +337,8 @@ end
 missing = [c r];
 
 %% Saving
-save('Wsoft')
+cd(export_folder)
+save('Wsoft2')
 
 
 %% Functions
