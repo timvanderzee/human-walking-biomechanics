@@ -9,13 +9,13 @@ The script allows the user to choose:
  * Type of experiment (for example preferred walking)
 
 Once these have been selected, the script allows the user to select a certain subject and participant to look at in particular.
-The following figures are created if we choose to look at subject 1 for trial 20 in the sagittal plane.
+The following figures are created if we choose to look at the sagittal plane left ankle power of subject 1 for trial 20.
 
 ## Figures 1 and 2: all participants ##
 ![picture](Fig1.jpg)
 ![picture](Fig2.jpg)
 
 ## Figures 3-5: only the selected participant ##
-![picture](Fig2.jpg)
 ![picture](Fig3.jpg)
 ![picture](Fig4.jpg)
+![picture](Fig5.jpg)
