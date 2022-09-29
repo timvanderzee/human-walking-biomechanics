@@ -1,31 +1,40 @@
 clear all; close all; clc
+% Analyzes biomechanical data in 5 strides files and create a summary file (Wsoft.mat)
+
 %% Settings
 subjects = 1:9;
 trials = 1:33;
 
-import_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Level 3 - MATLAB files\5 Strides Data files';
-% import_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\5 Strides Data files';
-export_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\';
+% folder where the files are that have been exported from Visual3D
+import_folder = uigetdir;
+% import_folder = '';
 
-%% Rename as analyse_biomechanics.m
+% folder where to save the summary file
+export_folder = uigetdir;
+% export_folder = '';
 
+%% Participant and data collection parameters
 vwalks = [.7 .7 .7 .9 .9 .9 1.1 1.1 1.1 1.6 1.6 1.6 1.8 1.8 1.8 2.0...
     1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.4 1.4 1.4]; % m/s
 
-% mass = [81.8 57.3 97.5 60.3 56.7 72.6 86.2 88.6 77 57]; % from excel sheets
-mass = [81.8 57.3 97.5 57 56.7 72.6 86.2 88.6 77]; % from excel sheets
-% mass = [82.0 57.3 97.5 nan  56.7 72.6 86.2 88.6 77 57]; % from V3D
+% participant body mass
+mass = [81.8 57.3 97.5 57 56.7 72.6 86.2 88.6 77]; % [kg]
 
-%% some parameters
-fsgrf = 1200; dtgrf = 1/fsgrf;
-fsmoc = 120; dtmoc = 1/fsmoc;
-
+% assumed relative segment mass
 relsegmass = [0.0145 0.0465 .1 0.0145 0.0465 .1 .142]; % according to visual 3D
 % https://www.c-motion.com/v3dwiki/index.php/Segment_Mass
 
+% data collection sample frequencies
+fsgrf = 1200; % [Hz]
+fsmoc = 120;  % [Hz]
+
+% corresponding delta(t) values
+dtgrf = 1/fsgrf;
+dtmoc = 1/fsmoc;
+
 nt = 33; ns = 9; nl = 2;
 
-%% define variables of interest
+%% preallocate variables of interest
 Wsoft = nan(nt,ns,nl);
 Wankle = nan(nt,ns,nl);
 Wknee = nan(nt,ns,nl);
@@ -53,32 +62,46 @@ Wjoint_trans = nan(nt,ns,nl);
 Wankle_trans = nan(nt,ns,nl);
 Wjoint_rot = nan(nt,ns,nl);
 Wperi_neg = nan(nt,ns,nl);
-
-   
 FTI = nan(nt,ns,nl);
-%% loop
 
-%for subj=[3]
+%% Main code
 for subj = subjects
+    
+    % preallocate (required for newer MATLAB versions)  
     data = [];
     
+    % lood 5 strides data
     cd(import_folder)
-    load(['p',num2str(subj),'_5StridesData.mat'])
+    
+    if exist(['p',num2str(subj),'_5StridesData.mat'], 'file')
+        load(['p',num2str(subj),'_5StridesData.mat'])    
+ 
+    else
+        disp('No .mat file found')
+    end
     
     disp(['subj:', num2str(subj)])
     disp('trial:')
     
 %for trial = [1]    
-for trial = [1:25,31:33]
-    
+for trial = 1:33
+        
+        if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || (subj == 7 && trial == 24)
+            disp(['Trial number: ', num2str(trial), ' - note: trial is missing (see Supplementary File)'])
+            continue
+        elseif (subj == 3 && trial == 4) || (subj == 9 && trial == 14) || (subj == 4 && trial == 1)
+            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+            continue
+        elseif (trial > 25 && trial < 31) 
+            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+            continue
+        else
+            disp(['Trial number: ', num2str(trial)])
+        end
+        
     if (~isempty(data(trial).Force))
         if  isfield(data(trial).Force,'force1')
 
-
-      % exclude bad trials, exclude subject 4
-      if (subj == 3 && trial == 4) || (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || (subj == 9 && trial == 14) || (subj == 4 && trial == 1)
-          continue
-      end
           
     %% Force platform: GRF, vCOM and PCOM
     grfl = data(trial).Force.force1(:,1:3);
@@ -338,8 +361,7 @@ missing = [c r];
 
 %% Saving
 cd(export_folder)
-save('Wsoft2')
-
+save('Wsoft_old')
 
 %% Functions
 function [Pper] = CalcPeripheralPower(segmentvelocity, rotenergy, segmenmass, vcom_mo, fsmo)

@@ -1,80 +1,83 @@
 clear all; close all; clc
+% Creates .mat files with 5 steps of good quality data from exported data
 
 %% Settings
-subjects = 1;
+subjects = 1:9;
 trials = 1:33;
 
-import_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\Exported';
-export_folder = 'D:\Emily Mundinger\Inverse Dynamics Grid\Level 3 - exported data\Recreated\5 Strides Data files';
+% folder where the files are that have been exported from Visual3D
+import_folder = uigetdir;
+% import_folder = '';
 
-%%
-%Add datafolder with the PnExported file folders to path before running funtion
-%INPUTS: 
-    %subjects: specify which subjects to make all strides file, 
-    %ex. subjects=[1:3]
-    % trials: specify which trials to include in all strides files, exclude
-    % missing trials and step width trials
-    % ex. trials= [1:25, 31:33] will exculde step width trials
-    
-%When running function for subject 9, in the target section of the function
-%remove lines that involve upper body markers (LAC, RAC, LEP, REP, LWR,
-%RWR)
+% folder where to save the 5 strides data
+export_folder = uigetdir;
+% export_folder = '';
 
-% Loads:
-% 1. 5 steps heelstikes
-% 2. Raw data that is exported from visual3D
-% Saves: 5 steps data stored for each participant in a struct
-% Make sure the data and the heelstrike files are in the path and that the
-% cd contains the subjects' raw data file folders
+%% Code
+cd(export_folder)
 
-cd(import_folder)
-load('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
-subjnames = {'1' ,'2', '3', '4', '5', '6', '7', '8', '9', '10'};
+% Loading heel strikes file
+if exist('5steps_heelstrikes.mat', 'file')
+    load('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
+else
+    disp('Did not find 5steps_heelstrikes.mat file')
+    return
+end
 
 % convert to mocap
 hsl_grf_mocap = round(hsl_grf/10) + 1;
 hsr_grf_mocap = round(hsr_grf/10) + 1;
 
 for subj = subjects
-    disp(subj)
+    disp(['Subject: ', num2str(subj)])
+    
+    % preallocate (required for newer MATLAB versions)    
     data=[];
     
-    % start with what you have
-    cd(import_folder)
+    % start with what you have (if something exists)
+    cd(export_folder)
     if exist(['p',num2str(subj),'_5steps_data'], 'file')
         load(['p',num2str(subj),'_5steps_data'], 'data')
     end
     
+    % cd to import folder
+    cd([import_folder, '\P',num2str(subj),'exportedfiles'])
+    
     for trial = trials
-        disp(trial)
         
-        if trial<10
-        files=dir(['*','_T0', num2str(trial),'.mat']);
-        elseif trial>9
-        files=dir(['*','export_T', num2str(trial),'.mat']);
+        if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || (subj == 7 && trial == 24)
+            disp(['Trial number: ', num2str(trial), ' - note: trial is missing (see Supplementary File)'])
+            continue
+        elseif (subj == 3 && trial == 4) || (subj == 9 && trial == 14) || (subj == 4 && trial == 1)
+            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+            continue
+        elseif (trial > 25 && trial < 31) 
+            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+            continue
+        else
+            disp(['Trial number: ', num2str(trial)])
         end
+        
+        % check which files are present
+        files = dir(['*',sprintf('%02d', trial),'.mat']);
 
         if ~isempty(files)
             load(files.name)
-        else, continue
+        else
+            disp('No .mat file found')
+            continue
         end
 
-        if ~isempty(files)
-            load(files.name)
-        else, continue
-        end
-
-        
         if ~isnan(hsl_grf(subj,trial)) && ~isempty(force1{1,1})
 
             % if hip is empty
             if isempty(l_hip_power{1})
                 l_hip_power{1} = nan(size(l_kne_power{1}));
                 r_hip_power{1} = nan(size(r_kne_power{1}));
+            
+                disp('Empty hip power')
             end
            
-
-            
             %% Store Force Platform Data
             data(trial).Platform.ForcePlatformOrigin = [ForcePlatformOrigin{1}];
             data(trial).Platform.ForcePlatformCorners = [ForcePlatformCorners{1}];
@@ -94,13 +97,10 @@ for subj = subjects
             data(trial).Analog.m2processed= [m2xprocessed{1}(hsl_grf(subj,trial):hsr_grf(subj,trial),:), m2yprocessed{1}(hsl_grf(subj,trial):hsr_grf(subj,trial),:), m2zprocessed{1}(hsl_grf(subj,trial):hsr_grf(subj,trial),:)];
             
             
-            %% Store Target Data
-        
+            %% Store Target Data - Raw
             data(trial).TargetData.L5TH_pos= [L5TH_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.LAC_pos= [LAC_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LASI_pos= [LASI_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LCAL_pos= [LCAL_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.LEP_pos= [LEP_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LGTR_pos= [LGTR_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LLEP_pos= [LLEP_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LLML_pos= [LLML_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
@@ -112,13 +112,10 @@ for subj = subjects
             data(trial).TargetData.LTH1_pos= [LTH1_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LTH2_pos= [LTH2_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LTH3_pos= [LTH3_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.LWR_pos= [LWR_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-            
+                                  
             data(trial).TargetData.R5TH_pos= [R5TH_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.RAC_pos= [RAC_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RASI_pos= [RASI_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RCAL_pos= [RCAL_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.REP_pos= [REP_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RGTR_pos= [RGTR_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RLEP_pos= [RLEP_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RLML_pos= [RLML_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
@@ -130,18 +127,25 @@ for subj = subjects
             data(trial).TargetData.RTH1_pos= [RTH1_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RTH2_pos= [RTH2_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RTH3_pos= [RTH3_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.RWR_pos= [RWR_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.SACR_pos= [SACR_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+
+            if subj ~= 9 % subject 9 does not have upper body markers
+                % upper body
+                data(trial).TargetData.LAC_pos= [LAC_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.LEP_pos= [LEP_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.LWR_pos= [LWR_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.RAC_pos= [RAC_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.REP_pos= [REP_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.RWR_pos= [RWR_pos{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+            end
             
+             %% Store Target Data - Filtered
             data(trial).TargetData.L5TH_pos_proc= [L5TH_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.LAC_pos_proc= [LAC_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LASI_pos_proc= [LASI_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LCAL_pos_proc= [LCAL_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.LEP_pos_proc= [LEP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LGTR_pos_proc= [LGTR_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LLEP_pos_proc= [LLEP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LLML_pos_proc= [LLML_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-            data(trial).TargetData.LMEP_pos_proc= [LMEP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LMML_pos_proc= [LMML_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LSH1_pos_proc= [LSH1_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LSH2_pos_proc= [LSH2_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
@@ -149,13 +153,11 @@ for subj = subjects
             data(trial).TargetData.LTH1_pos_proc= [LTH1_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LTH2_pos_proc= [LTH2_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.LTH3_pos_proc= [LTH3_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.LWR_pos_proc= [LWR_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-            
+            data(trial).TargetData.LMEP_pos_proc= [LMEP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                       
             data(trial).TargetData.R5TH_pos_proc= [R5TH_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.RAC_pos_proc= [RAC_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RASI_pos_proc= [RASI_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RCAL_pos_proc= [RCAL_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.REP_pos_proc= [REP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RGTR_pos_proc= [RGTR_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RLEP_pos_proc= [RLEP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RLML_pos_proc= [RLML_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
@@ -167,8 +169,17 @@ for subj = subjects
             data(trial).TargetData.RTH1_pos_proc= [RTH1_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RTH2_pos_proc= [RTH2_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.RTH3_pos_proc= [RTH3_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
-           data(trial).TargetData.RWR_pos_proc= [RWR_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).TargetData.SACR_pos_proc= [SACR_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+            
+            if subj ~= 9 % subject 9 does not have upper body markers
+                % upper body
+                data(trial).TargetData.LWR_pos_proc= [LWR_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.LEP_pos_proc= [LEP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.LAC_pos_proc= [LAC_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.RWR_pos_proc= [RWR_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.REP_pos_proc= [REP_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+                data(trial).TargetData.RAC_pos_proc= [RAC_pos_proc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
+            end
             
             %% Store Landmark Data
             data(trial).Landmark.HHL= [HHL{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
@@ -188,8 +199,7 @@ for subj = subjects
             
             data(trial).Force.freemoment1 = [freemoment1{1}(hsl_grf(subj,trial):hsr_grf(subj,trial),:)];
             data(trial).Force.freemoment2 = [freemoment2{1}(hsl_grf(subj,trial):hsr_grf(subj,trial),:)];
-            
-            
+                       
             %% Store Kinetic_Kinematic
             data(trial).Kinetic_Kinematic.lFtAngAcc = [lFtAngAcc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).Kinetic_Kinematic.lShAngAcc = [lShAngAcc{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
@@ -288,7 +298,6 @@ for subj = subjects
             data(trial).Kinetic_Kinematic.rPvSegResidual = [rPvSegResidual{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             
             %% Store Link_Model_Based
- 
             data(trial).Link_Model_Based.l_ank_angle = [l_ank_angle{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).Link_Model_Based.l_hip_angle = [l_hip_angle{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
             data(trial).Link_Model_Based.l_kne_angle = [l_kne_angle{1}(hsl_grf_mocap(subj,trial):hsr_grf_mocap(subj,trial),:)];
@@ -347,12 +356,15 @@ for subj = subjects
             data(trial).Kinetic_Kinematic = nan;
             data(trial).Link_Model_Based = nan;
             
-
+            disp('No data found in .mat file')
+            
         end
     end
 
     cd(export_folder)
+    disp('Saving data ...')
     save(['p',num2str(subj),'_5StridesData'], 'data')
 end
+
 
 

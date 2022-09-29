@@ -1,14 +1,10 @@
 clear all; close all; clc
 
-%% Rename as example_plotting.m, add plot3x3 function
+% folder where the files are that have been exported from Visual3D
+folder = uigetdir;
+% import_folder = '';
 
-% add code folder to datapath
-scriptfile = which('example_plotting.m');
-scriptfolder = scriptfile(1:(end-35));
-addpath(genpath(scriptfolder));
-cd(scriptfolder)
-
-% MAKE SURE YOU ADD THE DATAFOLDER TO PATH BEFORE RUNNING THE SCRIPT!
+addpath(genpath(folder))
 
 %% choose variable
 % in this section of code define the following 4 variables

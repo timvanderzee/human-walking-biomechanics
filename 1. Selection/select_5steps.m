@@ -51,7 +51,8 @@ for subj = subjects
         grfrt(grfrt(:,3)<20,:) = 0;  
 
         idx_mo = round(idx/10);
-%pjl and pjr are power
+        
+        % Joint powers
         pjl = [sum(data(trials(trial)).Link_Model_Based.l_ank_power(idx_mo(1):idx_mo(2),:),2)...
                sum(data(trials(trial)).Link_Model_Based.l_kne_power(idx_mo(1):idx_mo(2),:),2)...
                sum(data(trials(trial)).Link_Model_Based.l_hip_power(idx_mo(1):idx_mo(2),:),2)];
@@ -69,7 +70,7 @@ for subj = subjects
         %beginning of 5 steps
         n = length(hsl_new);
         if isnan(hsl(subj, trials(trial)))
-            netshift=0
+            netshift=0;
         else
             [~,i] = min(abs(hsl(subj, trials(trial))-hsl_new));
                 netshift = (i)-(ceil(n/2));
@@ -77,9 +78,9 @@ for subj = subjects
 
         while shift ~= 0
             close all
-           if (netshift) > abs(ceil(n/2)),
+           if (netshift) > abs(ceil(n/2))
                hsl_mid = hsl_new(1:5);
-            elseif (netshift) < (ceil(n/2)*(-1)),
+            elseif (netshift) < (ceil(n/2)*(-1))
                 hsl_mid=hsl_new(n-5:n);
             else, hsl_mid = hsl_new((ceil(n/2)+netshift):(ceil(n/2)+5+netshift)); 
             end
@@ -88,7 +89,7 @@ for subj = subjects
 
             h = figure;
 
-            %% left
+            %% left leg
             %plot GRF of entire stance phase and GRF of 5 steps
             subplot(241);
             plot(pjl); hold on
@@ -110,7 +111,7 @@ for subj = subjects
             plotperstride(grfl, hsl_mid)
             ylabel ('Force(N)')
 
-            %% right
+            %% right leg
             subplot(245);
             plot(pjr); hold on
 
@@ -193,7 +194,7 @@ end
 save('5steps_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
 
 
-function idx = select_indices(f1,f2);
+function idx = select_indices(f1,f2)
 figure();
 plot(f1(1)); hold on; plot(f2{1})
 xlabel ('Force')
