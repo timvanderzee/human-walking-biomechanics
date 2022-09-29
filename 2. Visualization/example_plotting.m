@@ -1,14 +1,10 @@
 clear all; close all; clc
 
-%% Rename as example_plotting.m, add plot3x3 function
+% folder where the files are that have been exported from Visual3D
+folder = uigetdir;
+% import_folder = '';
 
-% add code folder to datapath
-scriptfile = which('example_plotting.m');
-scriptfolder = scriptfile(1:(end-35));
-addpath(genpath(scriptfolder));
-cd(scriptfolder)
-
-% MAKE SURE YOU ADD THE DATAFOLDER TO PATH BEFORE RUNNING THE SCRIPT!
+addpath(genpath(folder))
 
 %% choose variable
 % in this section of code define the following 4 variables
@@ -55,13 +51,14 @@ subj=input('Which subject (from 1-9) are you interested in?');
 % subj is a single number for the subject that will be plotted in the
 % following section/follwoing 3 figures
 
-
-%% look at specific subject
-% one subject, one trial 
+%% Variable of interest (5 strides for one subject, one trial)
 plot5steps(typename, variablename, trial, subj, col)
-GRFplot(subj, trial)
-plot3x3(subj, trial)
 
+%% Ground reaction force (5 strides for one subject, one trial)
+GRFplot(subj, trial)
+
+%% 3x3 plot (5 strides for one subject, one trial)
+plot3x3(subj, trial)
 
 %%% FUNCTIONS %%%
 %% lookup_variable_name Function
@@ -709,8 +706,7 @@ Mjoint(3,2,:)=-(mean(interpolate_to_percgaitcycle(data(trial).Link_Model_Based.r
 Pjoint(3,1,:)=mean(interpolate_to_percgaitcycle(sum(data(trial).Link_Model_Based.l_hip_power,2), hsl, 201),2,'omitnan');
 Pjoint(3,2,:)=mean(interpolate_to_percgaitcycle(sum(data(trial).Link_Model_Based.r_hip_power,2), hsr, 201),2,'omitnan');
 
-
-figure(1);
+figure('name', (['3x3 plot for Subject ', num2str(s),', Trial: ', num2str(t)]))
 
 for i = 1:9
     subplot(3,3,i);
