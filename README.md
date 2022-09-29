@@ -7,7 +7,7 @@ Data exists on three different levels:
 2. Processed motion and forces in Visual3D software (.cmo)
 3. Exported inverse dynamics data, including biomechanical variables (.mat)
 
-This GitHub repository exclusively deals with level 3 of the data. Specifically, it:
-1. **Selects** 5 good quality strides of data from 60 s walking trials in exported inverse dynamics data
-2. **Visualizes** the 5 good quality strides
-3. **Analyzes** the 5 good quality strides, e.g., computes mechanical work done per stride
+This GitHub repository exclusively deals with level 3 of the data. Specifically, it can be used to:
+1. **Select** 5 good quality strides of data from one of 33 different 90 s walking trials
+2. **Visualize** the 5 good quality strides
+3. **Analyze** the 5 good quality strides, e.g., computes mechanical work and average force
