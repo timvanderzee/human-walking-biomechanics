@@ -1,15 +1,16 @@
-clear all; close all; clc
 % Combines separate .mat files for each trial into a single .mat file per subject for convenience
 
 %% Settings
-subjects = 7;
+subjects = 1:10;
 trials = 1:33;
 
-% folder where the files are that have been exported from Visual3D
-import_folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files\V3D exported data';
+if ~exist('import_folder','var')
+    import_folder = uigetdir;
+end
 
-% folder where to save the combined trials files
-export_folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files - reproduced\All Strides Data files';
+if ~exist('export_folder','var')
+    export_folder = uigetdir;
+end
 
 %% Code    
 for subj = subjects

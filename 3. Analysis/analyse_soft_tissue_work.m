@@ -1,13 +1,12 @@
-clear all; close all;
-
 % folder where the files are that have been exported from Visual3D
 % folder = uigetdir;
-folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files - reproduced\5 Strides Data files from process_5steps_new';
+if ~exist('folder','var')
+    folder = uigetdir;
+end
 cd(folder);
 
 %% Code
-% load('Wsoft_29-Sep-2022.mat')
-load('Wsoft.mat')
+load(['Wsoft',date,'.mat'])
 terms = {'Collision', 'Soft tissue', 'Negative'};
 old_order = 0;
 

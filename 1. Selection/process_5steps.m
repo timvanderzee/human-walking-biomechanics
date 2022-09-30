@@ -1,17 +1,16 @@
-clear all; close all; clc
 % Creates .mat files with 5 steps of good quality data from exported data
 
 %% Settings
 subjects = 1:9;
 trials = 1:33;
 
-% folder where the files are that have been exported from Visual3D
-% import_folder = uigetdir;
-import_folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files\All Strides Data files';
+if ~exist('import_folder','var')
+    import_folder = uigetdir;
+end
 
-% folder where to save the 5 strides data
-% export_folder = uigetdir;
-export_folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files - reproduced\5 Strides Data files from process_5steps_new';
+if ~exist('export_folder','var')
+    export_folder = uigetdir;
+end
 
 %% Code
 cd(export_folder)
