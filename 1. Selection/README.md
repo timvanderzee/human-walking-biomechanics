@@ -18,7 +18,7 @@ Data from each of 33 trials for each of 10 subjects has been exported from Visua
 This script loads the pX_AllStridesData.mat file and allows the user to select a different 5 strides for further analysis. The indices defining the new interval are saved in 5steps_heelstrikes.mat. 
 
 ## process_5steps.m ##
-This script loads the pX_AllStridesData.mat file and the 5steps_heelstrikes.mat file to create files containing only the 5 strides of good quality data, called ' pX_5StridesData.mat
+This script loads the pX_AllStridesData.mat file and the 5steps_heelstrikes.mat file to create files containing only the 5 strides of good quality data, called pX_5StridesData.mat
 
 ## compare_versions.m ##
-The pX_5StridesData.mat file depends on the chosen interval. The user may yield different versions of 5 strides files. The compare_version.m script facilitates comparing such versions.
+The pX_5StridesData.mat file depends on the chosen interval. The user may yield different versions of 5 strides files. The compare_versions.m script facilitates comparing such versions.
