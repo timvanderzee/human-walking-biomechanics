@@ -12,7 +12,7 @@ This folders includes code that allows the users to select a different 5 strides
 ![picture](dataflow.png)
 
 ## combine_trials.m ##
-Data from each of 33 trials for each of 10 subjects has been exported from Visual3D (V3D) into a separate MAT file (pXexport_TX.mat). combine_trials.m combines all 33 trials of one subject into a single MAT file for convience, called pX_AllStridesData.mat. 
+Data from each of 33 trials for each of 10 subjects has been exported from Visual3D (V3D) into a separate MAT file (pXexport_TX.mat). combine_trials.m combines all 33 trials of one subject into a single MAT file for convenience, called pX_AllStridesData.mat. 
 
 ## select_5steps.m ##
 This script loads the pX_AllStridesData.mat file and allows the user to select a different 5 strides for further analysis. The indices defining the new interval are save in 5steps_heelstrikes.mat. 
