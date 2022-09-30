@@ -12,4 +12,4 @@ analyse_soft_tissue_work.m can be used to investigate how soft tissue work chang
 
 It creates the summary figure shown below (see [the paper](https://journals.biologists.com/jeb/article/224/18/jeb239889/272226/Soft-tissue-deformations-explain-most-of-the) for explanation).
 
-![picture](dataflow.png)
+![picture](summary_figure.jpg)
