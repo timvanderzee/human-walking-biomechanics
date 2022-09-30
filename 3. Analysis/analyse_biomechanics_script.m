@@ -6,12 +6,12 @@ subjects = 1:9;
 trials = 1:33;
 
 % folder where the files are that have been exported from Visual3D
-import_folder = uigetdir;
-% import_folder = '';
+% import_folder = uigetdir;
+import_folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files - reproduced\5 Strides Data files from process_5steps_new';
 
 % folder where to save the summary file
-export_folder = uigetdir;
-% export_folder = '';
+% export_folder = uigetdir;
+export_folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files - reproduced\5 Strides Data files from process_5steps_new';
 
 %% Participant and data collection parameters
 vwalks = [.7 .7 .7 .9 .9 .9 1.1 1.1 1.1 1.6 1.6 1.6 1.8 1.8 1.8 2.0...
