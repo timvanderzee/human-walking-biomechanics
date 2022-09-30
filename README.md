@@ -11,3 +11,9 @@ This GitHub repository exclusively deals with level 3 of the data. Specifically,
 1. **Select** 5 good quality strides of data from one of 33 different 90 s walking trials
 2. **Visualize** the 5 good quality strides
 3. **Analyze** the 5 good quality strides, e.g., computes mechanical work and average force
+
+## main.m ##
+
+Running the main.m script executes results in recreating both all strides files and 5 strides files from exported data. If the provided exported data is the same as in the data repository (LINK HERE), then the recreated all strides files and 5 strides files should also be the same as the ones in the data repository (LINK HERE). 
+
+The main.m script therefore shows how all strides files and 5 strides files are created from exported files.
