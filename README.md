@@ -14,6 +14,6 @@ This GitHub repository exclusively deals with level 3 of the data. Specifically,
 
 ## main.m ##
 
-Running the main.m script executes results in recreating both all strides files and 5 strides files from exported data. If the provided exported data is the same as in the data repository (LINK HERE), then the recreated all strides files and 5 strides files should also be the same as the ones in the data repository (LINK HERE). 
+Running the main.m script results in recreating both all strides files and 5 strides files from exported data. If the provided exported data is the same as in the data repository (LINK HERE), then the recreated all strides files and 5 strides files should also be the same as the ones in the data repository (LINK HERE). 
 
 The main.m script therefore shows how all strides files and 5 strides files are created from exported files.
