@@ -1,4 +1,4 @@
-% Creates .mat files with 5 steps of good quality data from exported data
+% Creates .mat files with 5 strides of good quality data from exported data
 
 %% Settings
 subjects = 1:9;
@@ -16,10 +16,10 @@ end
 cd(export_folder)
 
 % Loading heel strikes file
-if exist('5steps_heelstrikes.mat', 'file')
-    load('5steps_heelstrikes.mat','hsl_grf','hsr_grf')
+if exist('5strides_heelstrikes.mat', 'file')
+    load('5strides_heelstrikes.mat','hsl_grf','hsr_grf')
 else
-    disp('Did not find 5steps_heelstrikes.mat file')
+    disp('Did not find 5strides_heelstrikes.mat file')
     return
 end
 

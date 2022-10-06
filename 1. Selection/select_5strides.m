@@ -1,5 +1,5 @@
 clear all; close all; clc
-% Creates .mat files with 5 steps of good quality data from exported data
+% Creates .mat files with 5 strides of good quality data from exported data
 
 %% Settings
 subjects = 1;
@@ -22,8 +22,8 @@ export_folder = 'C:\Users\timvd\Documents\human-walking-biomechanics\1. Selectio
 
 % start with what we have already and add to that
 cd(export_folder)
-if exist('5steps_heelstrikes.mat', 'file')
-    load('5steps_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
+if exist('5strides_heelstrikes.mat', 'file')
+    load('5strides_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
 else
     disp('No existing file found, starting from scratch')
 end
@@ -130,7 +130,7 @@ for subj = subjects
             %% left leg
             if ishandle(1), close(1); end; figure(1)
             
-            %plot GRF of entire stance phase and GRF of 5 steps
+            %plot GRF of entire stance phase and GRF of 5 strides
             subplot(241);
             plot(pjl); hold on
             xline(hsl_mo_mid(1),'k--')
@@ -181,8 +181,8 @@ for subj = subjects
             set(gcf,'Units','normalized', 'position', [0 .5 1 .5])
 
             %Ask user if they want to shift, the number entered shifts them
-            %that many heelstrikes forward or backward from the current 5 step
-            %range (not the first 5 step range)
+            %that many heelstrikes forward or backward from the current 5 stride
+            %range (not the first 5 stride range)
             shift = input('Press a number to shift (positive for forward, 0 to stop)');
 %             close(h)
 
@@ -204,7 +204,7 @@ for subj = subjects
         RHS_future = RHS(RHS>hsl_close(2));
         hsr_first = RHS_future(1);
 
-        %% Find 5 steps
+        %% Find 5 strides
 
         figure ('name', strcat(['subject: ', num2str(subj), ', trial: ', num2str(trials(trial))]));
         plot(grflt(:,3)); hold on
@@ -225,7 +225,7 @@ for subj = subjects
     end
 end  
 
-% save('5steps_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
+% save('5strides_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
 
 function idx = select_indices(f1,f2)
 figure();

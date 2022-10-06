@@ -52,7 +52,7 @@ subj=input('Which subject (from 1-9) are you interested in?');
 % following section/follwoing 3 figures
 
 %% Variable of interest (5 strides for one subject, one trial)
-plot5steps(typename, variablename, trial, subj, col)
+plot5strides(typename, variablename, trial, subj, col)
 
 %% Ground reaction force (5 strides for one subject, one trial)
 GRFplot(subj, trial)
@@ -185,7 +185,7 @@ for subject= 1:9 %Loops over all subjects that have 5 strides data files
             HS=hsr;
             sidename= 'Right';
         end
-        %var1 contains the mean of 5 steps for each subject and variable
+        %var1 contains the mean of 5 strides for each subject and variable
         var1(:, trial,subject)=mean(interpolate_to_percgaitcycle(data(trials(trial)).(field).(variable)(:,col), HS,101),2,'omitnan');
     end
 end
@@ -454,11 +454,11 @@ legend('Mean','1','2','3','4','5','6','7','8','9','location','best')
 end
 
 
-%% plot5steps Function
+%% plot5strides Function
 
-function plot5steps(field, variable, trial, subject, direction)
+function plot5strides(field, variable, trial, subject, direction)
 
-% Plots 5 steps and the mean of 5 steps for a given motion capture variable
+% Plots 5 strides and the mean of 5 strides for a given motion capture variable
 % in a specified plane of motion
 
 % INPUTS: field- a string that contains the name of the field that contains
@@ -529,14 +529,14 @@ end
 % Interpolate the data for the variable of interest to 101 data points
 var=interpolate_to_percgaitcycle(data(trial).(field).(variable)(:,direction),hs_mo(:,index),101);
 
-%Plot each 5 steps and mean of 5 steps for the variable 
-figure('name', (strcat(['5 steps and Mean for Subject ', num2str(subject), ' Trial ', num2str(trial),' --- ', side, ' ', joint, ' ', type])));
+%Plot each 5 strides and mean of 5 strides for the variable 
+figure('name', (strcat(['5 strides and Mean for Subject ', num2str(subject), ' Trial ', num2str(trial),' --- ', side, ' ', joint, ' ', type])));
 plot(mean(var,2), 'linewidth', 5, 'color', 'k'); hold on
 plot(var, 'linewidth', 2)
 xlabel ('% gait cycle')
 ylabel (strcat([side, ' ', joint, ' ', type, ' ', varunit]))
 title (strcat(['Subject ', num2str(subject), ' Trial ', num2str(trial),': ', side, ' ', joint, ' ', type]));
-legend('Mean', 'Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5', 'location','best')
+legend('Mean', 'stride 1', 'stride 2', 'stride 3', 'stride 4', 'stride 5', 'location','best')
 grid on
 axis tight
 
@@ -556,14 +556,14 @@ function GRFplot(subjects, trials)
 % Ouputs: For each subject/trial combination, a single plot will appear,
 
 
-% 5 steps analysis
+% 5 strides analysis
 
 %loops over subject and loads subject's data and then loops over trials
 for subj = subjects
     data=[];
     load(['p',num2str(subj),'_5StridesData'])
     for trial = trials
-% Figure: 5 step figure: ground reaction forces
+% Figure: 5 stride figure: ground reaction forces
 
         figure('name', (['GRF for Subject ', num2str(subj),', Trial: ', num2str(trial)]))
         
@@ -654,7 +654,7 @@ function plot3x3(s,t)
 %INPUTS: s- subject, t- trial
 % input single number not an array of numbers
 %OUTPUT: a 3x3 figure of the ankle, knee, and hip angle, moment, and power
-%for the left (blue) and right(red) legs avereaged over 5 steps
+%for the left (blue) and right(red) legs avereaged over 5 strides
 
 trial=t;
 subj=s;

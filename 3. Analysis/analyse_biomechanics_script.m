@@ -55,7 +55,7 @@ Tstride = nan(nt,ns,nl);
 vcom_hs = nan(nt,ns,nl);
 vcom_hs_alt = nan(nt,ns,nl);
 deltav = nan(nt,ns,nl);
-nsteps = nan(nt,ns,nl);
+nstrides = nan(nt,ns,nl);
 Wjointtranscoll = nan(nt,ns,nl);
 Wjoint_trans = nan(nt,ns,nl);
 Wankle_trans = nan(nt,ns,nl);
@@ -131,8 +131,8 @@ for trial = 1:33
     tol = unique(tol); tol(find(diff(tol)<5)) = [];
     tor = unique(tor); tor(find(diff(tor)<5)) = [];
 
-    nsteps(trial,subj,1) = length(hsl);
-    nsteps(trial,subj,2) = length(hsr);
+    nstrides(trial,subj,1) = length(hsl);
+    nstrides(trial,subj,2) = length(hsr);
     
     actual_mass = mean(grf(hsl(1):hsl(end),3))/9.81;
 
@@ -345,17 +345,17 @@ for trial = 1:33
     end   
     
         else
-            disp(['p',num2str(subj),'_5StepsData : trial', num2str(trial), ' is NaN'])
+            disp(['p',num2str(subj),'_5StridesData : trial', num2str(trial), ' is NaN'])
         end
     else
-        disp(['p',num2str(subj),'_5StepsData : trial', num2str(trial), ' is empty'])
+        disp(['p',num2str(subj),'_5StridesData : trial', num2str(trial), ' is empty'])
     end
 end
 
 end
 
 % missing trials
-[r,c] = find(isnan(nsteps(:,:,1)));
+[r,c] = find(isnan(nstrides(:,:,1)));
 missing = [c r];
 
 %% Saving

@@ -311,10 +311,10 @@ for subj = subjects
             data(trial).Link_Model_Based.rpv_wrt_lhip = [rpv_wrt_lhip{1}];
             data(trial).Link_Model_Based.rpv_wrt_rhip = [rpv_wrt_rhip{1}];
 
-            %% Store Subject Variables
-            data(trial).Subject.Height = [subjectHeight{1}];
-            data(trial).Subject.Mass = [subjectMass{1}];
-            data(trial).Subject.centerofmass = [centerofmass{1}];
+            %% Store Participant Variables
+            data(trial).Participant.Height = [subjectHeight{1}];
+            data(trial).Participant.Mass = [subjectMass{1}];
+            data(trial).Participant.centerofmass = [centerofmass{1}];
 
         else
            disp('No data found in .mat file')
