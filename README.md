@@ -8,7 +8,7 @@ Data exists on three different levels:
 3. Exported inverse dynamics data, including biomechanical variables (.mat)
 
 This GitHub repository exclusively deals with level 3 of the data. Specifically, it can be used to:
-1. **Select** 5 good quality strides of data from one of 33 different 90 s walking trials
+1. **Select** 5 good quality strides of data from one of 33 different 60 s walking trials
 2. **Visualize** the 5 good quality strides
 3. **Analyse** the 5 good quality strides, e.g., computes mechanical work and average force
 
