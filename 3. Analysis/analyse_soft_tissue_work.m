@@ -7,7 +7,8 @@
 if ishandle(1), close(1); end; figure(1)
 
 %% Parameters
-load(['Wsoft',date,'.mat'])
+cd(folder)
+load(['Wsoft_',date,'.mat'])
 terms = {'Collision', 'Soft tissue', 'Negative'};
 old_order = 0;
 
@@ -180,7 +181,7 @@ end
 function[SLs, SPs, Wmat, SPs_av, dVs] = get_Wmat(Wterm, parms,type)
 
 % cd(datafolder)
-load(['Wsoft',date,'.mat'],'Tstride','vcom_hs','deltav','vcom_hs_alt')
+load(['Wsoft_',date,'.mat'],'Tstride','vcom_hs','deltav','vcom_hs_alt')
 
 if nargin == 2
     type = [];

@@ -360,7 +360,7 @@ missing = [c r];
 
 %% Saving
 cd(export_folder)
-save(['Wsoft,',date,'.mat'])
+save(['Wsoft_',date,'.mat'])
 
 %% Functions
 function [Pper] = CalcPeripheralPower(segmentvelocity, rotenergy, segmenmass, vcom_mo, fsmo)
