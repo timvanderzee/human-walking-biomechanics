@@ -20,7 +20,7 @@ for subj = subjects
     data=[];
     
     % cd to import folder
-    cd([import_folder, '\P',num2str(subj),'exportedfiles'])
+    cd(fullfile(import_folder,['P',num2str(subj),'exportedfiles']))
     
     for trial = trials
         if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || (subj == 7 && trial == 24)
