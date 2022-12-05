@@ -1,6 +1,6 @@
 # Welcome to the 'human-walking-biomechanics' repository!
 
-This GitHub repository includes MATLAB scripts and functions that can be used to **select, visualize, and analyse** human walking biomechanics data from an open access data repository (LINK HERE). The data is described in more detail in a corresponding data descriptor paper (LINK HERE). 
+This GitHub repository includes MATLAB scripts and functions that can be used to **select, visualize, and analyse** human walking biomechanics data from an [open access data repository](https://springernature.figshare.com/collections/A_biomechanics_dataset_of_healthy_human_walking_at_various_speeds_step_lengths_and_step_widths/5897423/1). The data is described in more detail in a corresponding [data descriptor paper](https://www.nature.com/articles/s41597-022-01817-1). 
 
 Data exists on three different levels:
 1. Raw motions and forces (.c3d)
@@ -14,7 +14,7 @@ This GitHub repository exclusively deals with level 3 of the data. Specifically,
 
 ## main.m ##
 
-Running the main.m script results in recreating both all strides files and 5 strides files from exported data. If the provided exported data is the same as in the data repository (LINK HERE), then the recreated all strides files and 5 strides files should also be the same as the ones in the data repository (LINK HERE). 
+Running the main.m script results in recreating both all strides files and 5 strides files from exported data. If the provided exported data is the same as in the [data repository](https://springernature.figshare.com/collections/A_biomechanics_dataset_of_healthy_human_walking_at_various_speeds_step_lengths_and_step_widths/5897423/1), then the recreated all strides files and 5 strides files should also be the same as the ones in the data repository.  
 
 The main.m script therefore shows how all strides files and 5 strides files are created from exported files.
 
@@ -35,7 +35,7 @@ The main.m script therefore shows how all strides files and 5 strides files are 
 
 # Human Walking Biomechanics Data Set #
 
-Below is a description of the Human Walking Biomechanics Data Set. This is not required to run the code in this GitHub repository, but it is helpful when interpreting the data. For more information on the data set, see the accompanying data descriptor paper (LINK HERE).
+Below is a description of the Human Walking Biomechanics Data Set. This is not required to run the code in this GitHub repository, but it is helpful when interpreting the data. For more information on the data set, see the accompanying [data descriptor paper](https://www.nature.com/articles/s41597-022-01817-1).
 
 ## Summary ##
 
