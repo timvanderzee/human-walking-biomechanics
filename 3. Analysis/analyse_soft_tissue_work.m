@@ -1,9 +1,16 @@
+% -------------------------------------------------------------------------
+% analyse_soft_tissue_work.m 
+% -------------------------------------------------------------------------
+
+folder = fullfile(datafolder,'All Strides Data files');
+
 % folder where the files are that have been exported from Visual3D
 % % folder = uigetdir;
 % if ~exist('folder','var')
 %     folder = uigetdir;
 % end
 % cd(folder);
+
 if ishandle(1), close(1); end; figure(1)
 
 %% Parameters
@@ -26,17 +33,19 @@ parms.dimensionless = 1;
 subjs = 1:9;
 
 %% Loop over work terms
-for j = 1:3
+for j = 3:-1:1
     term = terms{j};
 
 if strcmp(term, 'Soft tissue')
     Wterm = Wsoftcoll;
     modelString = 'Work ~ -1 + GaitPar';
     i = 1;
+    
 elseif strcmp(term, 'Collision')
     Wterm = Wbodycoll;
     modelString = 'Work ~ -1 + GaitPar';
     i = 1;
+    
 else
     Wterm = Wbody_neg;
     modelString = 'Work ~ GaitPar';
@@ -62,16 +71,22 @@ T.Properties.VariableNames = {'Work' 'GaitPar' 'Subject'};
 LM = fitlm(T,modelString);
 
 % display coefficients
-disp(['Coefficient for ',term,': ', num2str(round(LM.Coefficients.Estimate(i),3)), ' +- ',  num2str(round(LM.Coefficients.SE(i),3))])
-disp(['Coef. in paper for ',term,': ', num2str(coefficients_in_paper(j)), ' +- ',  num2str(SE_in_paper(j))])
+disp(['Coefficient for ',term,': ', ...
+                num2str(round(LM.Coefficients.Estimate(i),3)), ' +- ',...
+                                  num2str(round(LM.Coefficients.SE(i),3))])
+                              
+disp(['Coef. in paper for ',term,': ', num2str(coefficients_in_paper(j)),...
+                                         ' +- ',  num2str(SE_in_paper(j))])
 
 %% 3D plots
 figure(1)
 color = get(gca,'colororder');
 subplot(1,3,j);
-[~, RMSE_R2(j,:), ~] = make_3D_plot(Wterm, parms,'Dofit', color,'velocity-based&heelstrike', LM);
+[~, RMSE_R2(j,:), ~] = make_3D_plot(Wterm, parms,'Dofit', color,...
+                                          'velocity-based&heelstrike', LM);
 
-titles = {'Whole-body collision', 'Soft tissue collision', 'Whole-body stride'};
+titles = {'Whole-body collision', 'Soft tissue collision', ...
+                                                      'Whole-body stride'};
 
 for i = 1:3
     subplot(1,3,j);
@@ -108,8 +123,8 @@ end
 %% make 3D plot
 idx = parms.idx;
 subjs = 1:9;
-xgrid = 0:.05:1.2; xgrid = xgrid(:);
-xfine = 0:.01:1.2; xfine = xfine(:);
+xgrid = (0:.05:1.2)'; 
+% xfine = (0:.01:1.2)';
 
 [SP_grid,SL_grid] = meshgrid(xgrid); % Generate x and y data
 SW = @(C,SP,SL) C*SL.^2.*SP.^2;
@@ -150,20 +165,30 @@ if strcmp(optional_fit,'Dofit')
    hold on; grid on
    
    for i = 1:4
-       SLsvec = SLs(idx(i):idx(i+1)-1,:); SPsvec = SPs(idx(i):idx(i+1)-1,:); Wvec = Wmat(idx(i):idx(i+1)-1,:);
+       SLsvec = SLs(idx(i):idx(i+1)-1,:); 
+       SPsvec = SPs(idx(i):idx(i+1)-1,:); 
+       Wvec = Wmat(idx(i):idx(i+1)-1,:);
+       
        h = plot3(SLsvec(:), SPsvec(:), Wvec(:), symb{i});
-       set(h,'marker',symb{i},'color',color(i,:),'markersize',7,'markerfacecolor',fillcolor(i,:)); hold on
+       set(h,'marker',symb{i},'color',color(i,:),'markersize',7,...
+                                         'markerfacecolor',fillcolor(i,:)); 
+       hold on
        
    end
     
     % zero plane
-    patch([1 1 -1 -1],[1 -1 -1 1], [0 0 0 0], 'LineStyle','None', 'FaceColor', 'k','FaceAlpha', .05); hold on
+    patch([1 1 -1 -1],[1 -1 -1 1], [0 0 0 0], 'LineStyle', 'None', ...
+                                'FaceColor', 'k','FaceAlpha', .05); 
+    hold on
     
     % plot surface
-    surf(SL_grid,SP_grid,SW(coef, SP_grid,SL_grid) + offset,color(1,:),'FaceColor', color(1,:),'FaceAlpha', .2, 'EdgeColor', color(1,:))
+    surf(SL_grid,SP_grid,SW(coef, SP_grid,SL_grid) + offset,color(1,:),...
+          'FaceColor', color(1,:),'FaceAlpha', .2, 'EdgeColor', color(1,:))
 
     % make nice
-    ylabel('Speed'); xlabel('Step length'); zlabel('Soft tissue dissipation')
+    ylabel('Speed'); 
+    xlabel('Step length'); 
+    zlabel('Soft tissue dissipation')
 end
 
 %% RMSE & R2
@@ -176,7 +201,6 @@ RES = sum((actual(:)-pred(:)).^2,'omitnan');
 TOT = sum((actual(:)-mean(actual(:),'omitnan')).^2,'omitnan');
 RMSE_R2(2) = 1 - RES/TOT; 
 end
-
 
 function[SLs, SPs, Wmat, SPs_av, dVs] = get_Wmat(Wterm, parms,type)
 
@@ -193,7 +217,7 @@ end
 
 %% Reorganize based on freq and SL and speed
 M = 10; % numbers of trials
-N = 9;
+N = 9;  % number of subjects
 
 % define variables
 vCSLs = nan(M,N);

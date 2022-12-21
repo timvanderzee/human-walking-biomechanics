@@ -1,24 +1,35 @@
-clear all; close all; clc
-% Creates .mat files with 5 strides of good quality data from exported data
+% -------------------------------------------------------------------------
+% select_5strides.m 
+%                   Creates .mat files with 5 strides of good quality data 
+%                   from exported data
+% -------------------------------------------------------------------------
+
+%% Init
+clear 
+close all
+clc
 
 %% Settings
 subjects = 1;
 trials = 1:33;
 
-% if you want to redefine start indices (not recommended, but possible)
+% --- if you want to redefine start indices (not recommended, but possible)
 new_indices = 0;
 
-% folder where the files are that have been exported from Visual3D
+% -------- folder where the files are that have been exported from Visual3D
 % import_folder = uigetdir;
-import_folder = 'C:\Users\timvd\Documents\Inverse dynamics\Level 3 - MATLAB files\Level 3 - MATLAB files\V3D exported data';
+import_folder = ['C:\Users\timvd\Documents\Inverse dynamics\Level 3 - '...
+                  'MATLAB files\Level 3 - MATLAB files\V3D exported data'];
 
-% folder where to save the 5 strides data
+% --------------------------------- folder where to save the 5 strides data
 % export_folder = uigetdir;
-export_folder = 'C:\Users\timvd\Documents\human-walking-biomechanics\1. Selection';
+export_folder = ['C:\Users\timvd\Documents\human-walking-biomechanics\'...
+                                                           '1. Selection'];
 
-%% Code
-%set new_indices to 1 if you want to redefine the range of indices for the
-%entire trial, if not set to 0
+%% Process Data
+
+% set new_indices to 1 if you want to redefine the range of indices for the
+% entire trial, if not set to 0
 
 % start with what we have already and add to that
 cd(export_folder)
@@ -30,7 +41,7 @@ end
 
 fs_grf = 1200; % [Hz]
 
-%% Loop
+%% For All Subjects 
 for subj = subjects    
     cd(import_folder)
     if exist(['p',num2str(subj),'_AllStridesData.mat'],'file')
@@ -41,20 +52,25 @@ for subj = subjects
     
     for trial = trials
         
-        if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || (subj == 7 && trial == 24)
-            disp(['Trial number: ', num2str(trial), ' - note: trial is missing (see Supplementary File)'])
+        if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || ...
+                                                 (subj == 7 && trial == 24)
+            disp(['Trial number: ', num2str(trial), ...
+                     ' - note: trial is missing (see Supplementary File)'])
             continue
-        elseif (subj == 3 && trial == 4) || (subj == 9 && trial == 14) || (subj == 4 && trial == 1)
-            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+        elseif (subj == 3 && trial == 4) || (subj == 9 && trial == 14) ||...
+                                                  (subj == 4 && trial == 1)
+            disp(['Trial number: ', num2str(trial), ...
+                    ' - note: trial is excluded (see Supplementary File)'])
             continue
         elseif (trial > 25 && trial < 31) 
-            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+            disp(['Trial number: ', num2str(trial), ...
+                    ' - note: trial is excluded (see Supplementary File)'])
             continue
         else
             disp(['Trial number: ', num2str(trial)])
         end
         
-        % start
+        % ----------------------------------------------------------- Start
         netshift = 0;
         shift = 10;
     
@@ -63,31 +79,31 @@ for subj = subjects
             continue
         end
         
-        % Forces
+        % ---------------------------------------------------------- Forces
         f1 = data(trials(trial)).Force.force1;
         f2 = data(trials(trial)).Force.force2;
         
-        % start of the walking trial (after jump)
+        % ------------------------- Start of the walking trial (after jump)
         if new_indices == 1 || ~exist('start','var')
            idx = select_indices(f1,f2);
         else
             idx = start(subj, trials(trial));
         end
         
-        % Mocap at half the sample frequency
+        % ------------------------------ Mocap at half the sample frequency
         idx_mo = round(idx/10);
       
-        % extract ground reaction force
+        % ----------------------------------- Extract ground reaction force
         grfl = f1(idx(1):end,:);
         grfr = f2(idx(1):end,:);
 
-        % Threshold at 20 N
+        % ----------------------------------------------- Threshold at 20 N
         grflt = grfl;
         grfrt = grfr;
         grflt(grflt(:,3)<20,:) = 0;
         grfrt(grfrt(:,3)<20,:) = 0;  
         
-        % Joint powers
+        % ---------------------------------------------------- Joint powers
         pjl = [sum(data(trials(trial)).Link_Model_Based.l_ank_power(idx_mo(1):end,:),2)...
                sum(data(trials(trial)).Link_Model_Based.l_kne_power(idx_mo(1):end,:),2)...
                sum(data(trials(trial)).Link_Model_Based.l_hip_power(idx_mo(1):end,:),2)];
@@ -95,14 +111,15 @@ for subj = subjects
                sum(data(trials(trial)).Link_Model_Based.r_kne_power(idx_mo(1):end,:),2)...
                sum(data(trials(trial)).Link_Model_Based.r_hip_power(idx_mo(1):end,:),2)];
            
-        % extract heelstrikes and toe-offs from grf
+        % ----------------------- Extract heelstrikes and toe-offs from grf
         [LHS, ~, RHS, ~] = invDynGrid_getHS_TO(grflt, grfrt, 5);
         
-        % all unique heelstrikes
+        % ------------------------------------------ all unique heelstrikes
         hsl_all = unique(LHS);
-        hsl_all_mo = unique(round(hsl_all/10) + 1); % heelstrikes for mocop (fs_mocop = .1*fs_grf)
+        % -------------------- heelstrikes for mocop (fs_mocop = .1*fs_grf)
+        hsl_all_mo = unique(round(hsl_all/10) + 1); 
         
-        % if heel strike exists, back-calculated the net shift from midpoint
+        % if heel strike exists, back-calculate the net shift from midpoint
         n = length(hsl_all);
         if isfinite(hsl(subj, trials(trial)))
             [~,i] = min(abs(hsl(subj, trials(trial))-hsl_all));
@@ -114,15 +131,16 @@ for subj = subjects
 
         while shift ~= 0
            
-           % determine the chosen heel strikes (hsl_mid)
+           % ------------------ determine the chosen heel strikes (hsl_mid)
            if (netshift) > abs(ceil(n/2))
                hsl_mid = hsl_all(1:5);
                keyboard
             elseif (netshift) < (ceil(n/2)*(-1))
                 hsl_mid=hsl_all(n-5:n);
                 keyboard
-           else % normal case
-                hsl_mid = hsl_all((ceil(n/2)+netshift):(ceil(n/2)+5+netshift)); 
+           else % --------------------------------------------- normal case
+                hsl_mid = hsl_all((ceil(n/2)+netshift):...
+                                                   (ceil(n/2)+5+netshift)); 
             end
 
             hsl_mo_mid = round(hsl_mid/10) + 1;
@@ -130,7 +148,7 @@ for subj = subjects
             %% left leg
             if ishandle(1), close(1); end; figure(1)
             
-            %plot GRF of entire stance phase and GRF of 5 strides
+            % -------- Plot GRF of entire stance phase and GRF of 5 strides
             subplot(241);
             plot(pjl); hold on
             xline(hsl_mo_mid(1),'k--')
@@ -180,11 +198,11 @@ for subj = subjects
 
             set(gcf,'Units','normalized', 'position', [0 .5 1 .5])
 
-            %Ask user if they want to shift, the number entered shifts them
-            %that many heelstrikes forward or backward from the current 5 stride
-            %range (not the first 5 stride range)
-            shift = input('Press a number to shift (positive for forward, 0 to stop)');
-%             close(h)
+            % Ask user if they want to shift, the number entered shifts them
+            % that many heelstrikes forward or backward from the current 5 
+            % stride range (not the first 5 stride range)
+            shift = input(['Press a number to shift'...
+                                    ' (positive for forward, 0 to stop)']);
 
             % update net shift
             netshift = netshift + shift;
@@ -195,18 +213,18 @@ for subj = subjects
         start(subj,trial) = idx(1);
   
         %% Find new heelstrike
-        % first new left heel strike: choose the closest to the first left heel strike
+        % --- first new left heel strike: closest to first left heel strike
         [~,closest] = min(abs(LHS-hsl(subj,trials(trial))));
         hsl_close = [LHS(closest) LHS(closest+5)];
 
-        % only consider right heel strikes after the identified left
-        % heel strike and pick the first one
+        % - only consider right heel strikes after the identified left heel 
+        % strike and pick the first one
         RHS_future = RHS(RHS>hsl_close(2));
         hsr_first = RHS_future(1);
 
         %% Find 5 strides
-
-        figure ('name', strcat(['subject: ', num2str(subj), ', trial: ', num2str(trials(trial))]));
+        figure ('name', strcat(['subject: ', num2str(subj), ', trial: ', ...
+                                                 num2str(trials(trial))]));
         plot(grflt(:,3)); hold on
         plot(hsl(subj,trial), 0, 'bo')
         plot(LHS, zeros(size(LHS)), 'bx')
@@ -219,12 +237,13 @@ for subj = subjects
         plot(RHS, zeros(size(RHS)), 'rx')
         plot(hsr_first, 0, 'g.', 'markersize', 7)
 
-        % ground reaction force heelstrikes
-        hsl_grf(subj,trials(trial)) = hsl_close(1) +  start(subj,trials(trial)) -1;
-        hsr_grf(subj,trials(trial)) = hsr_first +  start(subj,trials(trial)) -1;
+        % ------------------------------- ground reaction force heelstrikes
+        hsl_grf(subj,trials(trial)) = hsl_close(1) + ...
+                                             start(subj,trials(trial)) - 1;
+        hsr_grf(subj,trials(trial)) = hsr_first + ...
+                                              start(subj,trials(trial)) - 1;
     end
 end  
-
 % save('5strides_heelstrikes.mat','hsl_grf','hsr_grf','hsl','start')
 
 function idx = select_indices(f1,f2)
@@ -236,7 +255,6 @@ ylabel ('Frames')
 close
 idx = round(idx);
 end
-
 function [] = plotperstride(x, hsl)
 
 color = get(gca,'colororder');

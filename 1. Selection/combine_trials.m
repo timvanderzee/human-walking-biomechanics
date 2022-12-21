@@ -1,8 +1,16 @@
-% Combines separate .mat files for each trial into a single .mat file per subject for convenience
+% -------------------------------------------------------------------------
+% combine_trials.m 
+%                   combines separate .mat files for each trial into a 
+%                   single .mat file per subject for convenience
+% -------------------------------------------------------------------------
+
+%% Set Import and Export Directory
+import_folder = fullfile(datafolder,'V3D exported data');
+export_folder = fullfile(datafolder,'All Strides Data files');
 
 %% Settings
 subjects = 1:10;
-trials = 1:33;
+no_trials = 33;
 
 if ~exist('import_folder','var')
     import_folder = uigetdir;
@@ -12,25 +20,26 @@ if ~exist('export_folder','var')
     export_folder = uigetdir;
 end
 
-%% Code    
+%% Fill Data Array for All Subjects   
 for subj = subjects
     disp(['Subject: ', num2str(subj)])
-    
-    % preallocate (required for newer MATLAB versions)
-    data=[];
-    
-    % cd to import folder
+   
+    data=[]; % ------------------------------- preallocate empty data array
+    % ----------------------------------- change directory to import folder
     cd(fullfile(import_folder,['P',num2str(subj),'exportedfiles']))
     
-    for trial = trials
-        if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || (subj == 7 && trial == 24)
-            disp(['Trial number: ', num2str(trial), ' - note: trial is missing (see Supplementary File)'])
+    % -------------- reverse for loop for preallocation of data vector size
+    for trial = no_trials:-1:1 
+        if (subj == 6 && trial == 21) || ...
+                   (subj == 6 && trial == 31) || (subj == 7 && trial == 24)
+            disp(['Trial number: ', num2str(trial),...
+                     ' - note: trial is missing (see Supplementary File)'])
             continue
         else
             disp(['Trial number: ', num2str(trial)])
         end
         
-        % check which files are present
+        % ----------------------------------- check which files are present
         files = dir(['*',sprintf('%02d', trial),'.mat']);
 
         if ~isempty(files)
@@ -51,108 +60,108 @@ for subj = subjects
             data(trial).Platform.MatrixStore = [MatrixStore{1}];     
             
             %% Store Analog Data 
-            data(trial).Analog.f1original= [f1xoriginal{1}, f1yoriginal{1}, f1zoriginal{1}];
-            data(trial).Analog.m1original= [f2xoriginal{1}, f2yoriginal{1}, f2zoriginal{1}];
-            data(trial).Analog.f2original= [m1xoriginal{1}, m1yoriginal{1}, m1zoriginal{1}];
-            data(trial).Analog.m2original= [m2xoriginal{1}, m2yoriginal{1}, m2zoriginal{1}];
+            data(trial).Analog.f1original = [f1xoriginal{1}, f1yoriginal{1}, f1zoriginal{1}];
+            data(trial).Analog.m1original = [f2xoriginal{1}, f2yoriginal{1}, f2zoriginal{1}];
+            data(trial).Analog.f2original = [m1xoriginal{1}, m1yoriginal{1}, m1zoriginal{1}];
+            data(trial).Analog.m2original = [m2xoriginal{1}, m2yoriginal{1}, m2zoriginal{1}];
             
-            data(trial).Analog.f1processed= [f1xprocessed{1}, f1yprocessed{1}, f1zprocessed{1}];
-            data(trial).Analog.m1processed= [f2xprocessed{1}, f2yprocessed{1}, f2zprocessed{1}];
-            data(trial).Analog.f2processed= [m1xprocessed{1}, m1yprocessed{1}, m1zprocessed{1}];
-            data(trial).Analog.m2processed= [m2xprocessed{1}, m2yprocessed{1}, m2zprocessed{1}];      
+            data(trial).Analog.f1processed = [f1xprocessed{1}, f1yprocessed{1}, f1zprocessed{1}];
+            data(trial).Analog.m1processed = [f2xprocessed{1}, f2yprocessed{1}, f2zprocessed{1}];
+            data(trial).Analog.f2processed = [m1xprocessed{1}, m1yprocessed{1}, m1zprocessed{1}];
+            data(trial).Analog.m2processed = [m2xprocessed{1}, m2yprocessed{1}, m2zprocessed{1}];      
             
             %% Store Target Data
-            data(trial).TargetData.L5TH_pos= [L5TH_pos{1}];
-            data(trial).TargetData.LASI_pos= [LASI_pos{1}];
-            data(trial).TargetData.LCAL_pos= [LCAL_pos{1}];
-            data(trial).TargetData.LGTR_pos= [LGTR_pos{1}];
-            data(trial).TargetData.LLEP_pos= [LLEP_pos{1}];
-            data(trial).TargetData.LLML_pos= [LLML_pos{1}];
-            data(trial).TargetData.LMEP_pos= [LMEP_pos{1}];
-            data(trial).TargetData.LMML_pos= [LMML_pos{1}];
-            data(trial).TargetData.LSH1_pos= [LSH1_pos{1}];
-            data(trial).TargetData.LSH2_pos= [LSH2_pos{1}];
-            data(trial).TargetData.LSH3_pos= [LSH3_pos{1}];
-            data(trial).TargetData.LTH1_pos= [LTH1_pos{1}];
-            data(trial).TargetData.LTH2_pos= [LTH2_pos{1}];
-            data(trial).TargetData.LTH3_pos= [LTH3_pos{1}];
+            data(trial).TargetData.L5TH_pos = [L5TH_pos{1}];
+            data(trial).TargetData.LASI_pos = [LASI_pos{1}];
+            data(trial).TargetData.LCAL_pos = [LCAL_pos{1}];
+            data(trial).TargetData.LGTR_pos = [LGTR_pos{1}];
+            data(trial).TargetData.LLEP_pos = [LLEP_pos{1}];
+            data(trial).TargetData.LLML_pos = [LLML_pos{1}];
+            data(trial).TargetData.LMEP_pos = [LMEP_pos{1}];
+            data(trial).TargetData.LMML_pos = [LMML_pos{1}];
+            data(trial).TargetData.LSH1_pos = [LSH1_pos{1}];
+            data(trial).TargetData.LSH2_pos = [LSH2_pos{1}];
+            data(trial).TargetData.LSH3_pos = [LSH3_pos{1}];
+            data(trial).TargetData.LTH1_pos = [LTH1_pos{1}];
+            data(trial).TargetData.LTH2_pos = [LTH2_pos{1}];
+            data(trial).TargetData.LTH3_pos = [LTH3_pos{1}];
                                 
-            data(trial).TargetData.R5TH_pos= [R5TH_pos{1}];
-            data(trial).TargetData.RASI_pos= [RASI_pos{1}];
-            data(trial).TargetData.RCAL_pos= [RCAL_pos{1}];
-            data(trial).TargetData.RGTR_pos= [RGTR_pos{1}];
-            data(trial).TargetData.RLEP_pos= [RLEP_pos{1}];
-            data(trial).TargetData.RLML_pos= [RLML_pos{1}];
-            data(trial).TargetData.RMEP_pos= [RMEP_pos{1}];
-            data(trial).TargetData.RMML_pos= [RMML_pos{1}];
-            data(trial).TargetData.RSH1_pos= [RSH1_pos{1}];
-            data(trial).TargetData.RSH2_pos= [RSH2_pos{1}];
-            data(trial).TargetData.RSH3_pos= [RSH3_pos{1}];
-            data(trial).TargetData.RTH1_pos= [RTH1_pos{1}];
-            data(trial).TargetData.RTH2_pos= [RTH2_pos{1}];
-            data(trial).TargetData.RTH3_pos= [RTH3_pos{1}];
-            data(trial).TargetData.SACR_pos= [SACR_pos{1}];
+            data(trial).TargetData.R5TH_pos = [R5TH_pos{1}];
+            data(trial).TargetData.RASI_pos = [RASI_pos{1}];
+            data(trial).TargetData.RCAL_pos = [RCAL_pos{1}];
+            data(trial).TargetData.RGTR_pos = [RGTR_pos{1}];
+            data(trial).TargetData.RLEP_pos = [RLEP_pos{1}];
+            data(trial).TargetData.RLML_pos = [RLML_pos{1}];
+            data(trial).TargetData.RMEP_pos = [RMEP_pos{1}];
+            data(trial).TargetData.RMML_pos = [RMML_pos{1}];
+            data(trial).TargetData.RSH1_pos = [RSH1_pos{1}];
+            data(trial).TargetData.RSH2_pos = [RSH2_pos{1}];
+            data(trial).TargetData.RSH3_pos = [RSH3_pos{1}];
+            data(trial).TargetData.RTH1_pos = [RTH1_pos{1}];
+            data(trial).TargetData.RTH2_pos = [RTH2_pos{1}];
+            data(trial).TargetData.RTH3_pos = [RTH3_pos{1}];
+            data(trial).TargetData.SACR_pos = [SACR_pos{1}];
             
-            if subj ~= 9 % subject 9 does not have upper body markers
-                % upper body
-                data(trial).TargetData.LAC_pos= [LAC_pos{1}];
-                data(trial).TargetData.LEP_pos= [LEP_pos{1}];
-                data(trial).TargetData.LWR_pos= [LWR_pos{1}];
-                data(trial).TargetData.RAC_pos= [RAC_pos{1}];
-                data(trial).TargetData.REP_pos= [REP_pos{1}];
-                data(trial).TargetData.RWR_pos= [RWR_pos{1}];
+            % ------- subject 9 does not have upper body markers upper body
+            if subj ~= 9
+                data(trial).TargetData.LAC_pos = [LAC_pos{1}];
+                data(trial).TargetData.LEP_pos = [LEP_pos{1}];
+                data(trial).TargetData.LWR_pos = [LWR_pos{1}];
+                data(trial).TargetData.RAC_pos = [RAC_pos{1}];
+                data(trial).TargetData.REP_pos = [REP_pos{1}];
+                data(trial).TargetData.RWR_pos = [RWR_pos{1}];
             end
             
              %% Store Target Data - Filtered          
-            data(trial).TargetData.L5TH_pos_proc= [L5TH_pos_proc{1}];
-            data(trial).TargetData.LASI_pos_proc= [LASI_pos_proc{1}];
-            data(trial).TargetData.LCAL_pos_proc= [LCAL_pos_proc{1}];
-            data(trial).TargetData.LGTR_pos_proc= [LGTR_pos_proc{1}];
-            data(trial).TargetData.LLEP_pos_proc= [LLEP_pos_proc{1}];
-            data(trial).TargetData.LLML_pos_proc= [LLML_pos_proc{1}];
-            data(trial).TargetData.LMEP_pos_proc= [LMEP_pos_proc{1}];
-            data(trial).TargetData.LMML_pos_proc= [LMML_pos_proc{1}];
-            data(trial).TargetData.LSH1_pos_proc= [LSH1_pos_proc{1}];
-            data(trial).TargetData.LSH2_pos_proc= [LSH2_pos_proc{1}];
-            data(trial).TargetData.LSH3_pos_proc= [LSH3_pos_proc{1}];
-            data(trial).TargetData.LTH1_pos_proc= [LTH1_pos_proc{1}];
-            data(trial).TargetData.LTH2_pos_proc= [LTH2_pos_proc{1}];
-            data(trial).TargetData.LTH3_pos_proc= [LTH3_pos_proc{1}];
+            data(trial).TargetData.L5TH_pos_proc = [L5TH_pos_proc{1}];
+            data(trial).TargetData.LASI_pos_proc = [LASI_pos_proc{1}];
+            data(trial).TargetData.LCAL_pos_proc = [LCAL_pos_proc{1}];
+            data(trial).TargetData.LGTR_pos_proc = [LGTR_pos_proc{1}];
+            data(trial).TargetData.LLEP_pos_proc = [LLEP_pos_proc{1}];
+            data(trial).TargetData.LLML_pos_proc = [LLML_pos_proc{1}];
+            data(trial).TargetData.LMEP_pos_proc = [LMEP_pos_proc{1}];
+            data(trial).TargetData.LMML_pos_proc = [LMML_pos_proc{1}];
+            data(trial).TargetData.LSH1_pos_proc = [LSH1_pos_proc{1}];
+            data(trial).TargetData.LSH2_pos_proc = [LSH2_pos_proc{1}];
+            data(trial).TargetData.LSH3_pos_proc = [LSH3_pos_proc{1}];
+            data(trial).TargetData.LTH1_pos_proc = [LTH1_pos_proc{1}];
+            data(trial).TargetData.LTH2_pos_proc = [LTH2_pos_proc{1}];
+            data(trial).TargetData.LTH3_pos_proc = [LTH3_pos_proc{1}];
                         
-            data(trial).TargetData.R5TH_pos_proc= [R5TH_pos_proc{1}];
-            data(trial).TargetData.RASI_pos_proc= [RASI_pos_proc{1}];
-            data(trial).TargetData.RCAL_pos_proc= [RCAL_pos_proc{1}];
-            data(trial).TargetData.RGTR_pos_proc= [RGTR_pos_proc{1}];
-            data(trial).TargetData.RLEP_pos_proc= [RLEP_pos_proc{1}];
-            data(trial).TargetData.RLML_pos_proc= [RLML_pos_proc{1}];
-            data(trial).TargetData.RMEP_pos_proc= [RMEP_pos_proc{1}];
-            data(trial).TargetData.RMML_pos_proc= [RMML_pos_proc{1}];
-            data(trial).TargetData.RSH1_pos_proc= [RSH1_pos_proc{1}];
-            data(trial).TargetData.RSH2_pos_proc= [RSH2_pos_proc{1}];
-            data(trial).TargetData.RSH3_pos_proc= [RSH3_pos_proc{1}];
-            data(trial).TargetData.RTH1_pos_proc= [RTH1_pos_proc{1}];
-            data(trial).TargetData.RTH2_pos_proc= [RTH2_pos_proc{1}];
-            data(trial).TargetData.RTH3_pos_proc= [RTH3_pos_proc{1}];
-            data(trial).TargetData.SACR_pos_proc= [SACR_pos_proc{1}];
+            data(trial).TargetData.R5TH_pos_proc = [R5TH_pos_proc{1}];
+            data(trial).TargetData.RASI_pos_proc = [RASI_pos_proc{1}];
+            data(trial).TargetData.RCAL_pos_proc = [RCAL_pos_proc{1}];
+            data(trial).TargetData.RGTR_pos_proc = [RGTR_pos_proc{1}];
+            data(trial).TargetData.RLEP_pos_proc = [RLEP_pos_proc{1}];
+            data(trial).TargetData.RLML_pos_proc = [RLML_pos_proc{1}];
+            data(trial).TargetData.RMEP_pos_proc = [RMEP_pos_proc{1}];
+            data(trial).TargetData.RMML_pos_proc = [RMML_pos_proc{1}];
+            data(trial).TargetData.RSH1_pos_proc = [RSH1_pos_proc{1}];
+            data(trial).TargetData.RSH2_pos_proc = [RSH2_pos_proc{1}];
+            data(trial).TargetData.RSH3_pos_proc = [RSH3_pos_proc{1}];
+            data(trial).TargetData.RTH1_pos_proc = [RTH1_pos_proc{1}];
+            data(trial).TargetData.RTH2_pos_proc = [RTH2_pos_proc{1}];
+            data(trial).TargetData.RTH3_pos_proc = [RTH3_pos_proc{1}];
+            data(trial).TargetData.SACR_pos_proc = [SACR_pos_proc{1}];
            
-            if subj ~= 9 % subject 9 does not have upper body markers
-                % upper body
-                data(trial).TargetData.LAC_pos_proc= [LAC_pos_proc{1}];
-                data(trial).TargetData.LEP_pos_proc= [LEP_pos_proc{1}];
-                data(trial).TargetData.LWR_pos_proc= [LWR_pos_proc{1}];
-                data(trial).TargetData.RAC_pos_proc= [RAC_pos_proc{1}];
-                data(trial).TargetData.REP_pos_proc= [REP_pos_proc{1}];
-                data(trial).TargetData.RWR_pos_proc= [RWR_pos_proc{1}];
+            % ------- subject 9 does not have upper body markers upper body
+            if subj ~= 9 
+                data(trial).TargetData.LAC_pos_proc = [LAC_pos_proc{1}];
+                data(trial).TargetData.LEP_pos_proc = [LEP_pos_proc{1}];
+                data(trial).TargetData.LWR_pos_proc = [LWR_pos_proc{1}];
+                data(trial).TargetData.RAC_pos_proc = [RAC_pos_proc{1}];
+                data(trial).TargetData.REP_pos_proc = [REP_pos_proc{1}];
+                data(trial).TargetData.RWR_pos_proc = [RWR_pos_proc{1}];
             end
             
             %% Store Landmark Data
-            data(trial).Landmark.HHL= [HHL{1}];
-            data(trial).Landmark.HHR= [HHR{1}];
+            data(trial).Landmark.HHL = [HHL{1}];
+            data(trial).Landmark.HHR = [HHR{1}];
             
             %% Store Time Data 
-            data(trial).Time.AnalogTime= [AnalogTime{1}];
-            data(trial).Time.FRAMES= [FRAMES{1}];
-            data(trial).Time.TIME= [TIME{1}];
+            data(trial).Time.AnalogTime = [AnalogTime{1}];
+            data(trial).Time.FRAMES = [FRAMES{1}];
+            data(trial).Time.TIME = [TIME{1}];
                       
             %% Store Ground Reaction Forces
             data(trial).Force.force1 = [force1{1}]; 
@@ -318,14 +327,13 @@ for subj = subjects
 
         else
            disp('No data found in .mat file')
-            
         end
     end
 
     cd(export_folder)
+    
     disp('Saving data ...')
     save(['p',num2str(subj),'_AllStridesData.mat'], 'data', '-v7.3')
-%     disp(data)
 end
 
 

@@ -34,7 +34,7 @@ for q=1:length(ref_idx1)
   end
 end
 
-if(isnan(hsl(1))), hsl(1) = []; end;
+if(isnan(hsl(1))), hsl(1) = []; end
 
 tol = nan(length(ref_idx2),1);
 for q=1:length(ref_idx2)
@@ -44,9 +44,9 @@ for q=1:length(ref_idx2)
     tol(q) = to + ref_idx2(q) - 1;
   end
 end
-if(isnan(tol(end))), tol(end) = []; end;
+if(isnan(tol(end))), tol(end) = []; end
 
-if(tol(1)<hsl(1)), tol(1)=[]; end;
+if(tol(1)<hsl(1)), tol(1)=[]; end
 % if(hsl(end)>tol(end)), hsl(end)=[]; end;
 
 
@@ -70,7 +70,7 @@ for q=1:length(ref_idx1)
   end
 end
 
-if(isnan(hsr(1))), hsr(1) = []; end;
+if(isnan(hsr(1))), hsr(1) = []; end
 
 tor = nan(length(ref_idx2),1);
 for q=1:length(ref_idx2)
@@ -80,7 +80,7 @@ for q=1:length(ref_idx2)
     tor(q) = to + ref_idx2(q) - 1;
   end
 end
-if(isnan(tor(end))), tor(end) = []; end;
+if(isnan(tor(end))), tor(end) = []; end
 
 % if(tor(1)<hsr(1)), tor(1)=[]; end;
-if(hsr(end)>tor(end)), hsr(end)=[]; end;
+if(hsr(end)>tor(end)), hsr(end)=[]; end
