@@ -1,4 +1,11 @@
-% Analyzes biomechanical data in 5 strides files and create a summary file (Wsoft.mat)
+% -------------------------------------------------------------------------
+% Analyzes biomechanical data in 5 strides files and create a summary file 
+% (Wsoft.mat)
+% -------------------------------------------------------------------------
+
+%% Set Import and Export Directories 
+import_folder = fullfile(datafolder,'5 Strides Data files');
+export_folder = fullfile(datafolder,'All Strides Data files');
 
 %% Settings
 subjects = 1:9;
@@ -14,7 +21,8 @@ end
 
 %% Participant and data collection parameters
 vwalks = [.7 .7 .7 .9 .9 .9 1.1 1.1 1.1 1.6 1.6 1.6 1.8 1.8 1.8 2.0...
-    1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.4 1.4 1.4]; % m/s
+            1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 1.25 ...
+                                             1.25 1.25 1.4 1.4 1.4]; % m/s
 
 % participant body mass
 mass = [81.8 57.3 97.5 57 56.7 72.6 86.2 88.6 77]; % [kg]
@@ -85,14 +93,19 @@ for subj = subjects
 %for trial = [1]    
 for trial = 1:33
         
-        if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) || (subj == 7 && trial == 24)
-            disp(['Trial number: ', num2str(trial), ' - note: trial is missing (see Supplementary File)'])
+        if (subj == 6 && trial == 21) || (subj == 6 && trial == 31) ||...
+                                                 (subj == 7 && trial == 24)
+            disp(['Trial number: ', num2str(trial), ...
+                     ' - note: trial is missing (see Supplementary File)'])
             continue
-        elseif (subj == 3 && trial == 4) || (subj == 9 && trial == 14) || (subj == 4 && trial == 1)
-            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+        elseif (subj == 3 && trial == 4) || (subj == 9 && trial == 14) || ...
+                                                  (subj == 4 && trial == 1)
+            disp(['Trial number: ', num2str(trial), ...
+                    ' - note: trial is excluded (see Supplementary File)'])
             continue
         elseif (trial > 25 && trial < 31) 
-            disp(['Trial number: ', num2str(trial), ' - note: trial is excluded (see Supplementary File)'])
+            disp(['Trial number: ', num2str(trial), ...
+                    ' - note: trial is excluded (see Supplementary File)'])
             continue
         else
             disp(['Trial number: ', num2str(trial)])
@@ -126,10 +139,10 @@ for trial = 1:33
     
     hsr(6) = length(grfl); % often not found with the function
     
-    hsl = unique(hsl); hsl(find(diff(hsl)<5)) = [];
-    hsr = unique(hsr); hsr(find(diff(hsr)<5)) = [];
-    tol = unique(tol); tol(find(diff(tol)<5)) = [];
-    tor = unique(tor); tor(find(diff(tor)<5)) = [];
+    hsl = unique(hsl); hsl(diff(hsl)<5) = [];
+    hsr = unique(hsr); hsr(diff(hsr)<5) = [];
+    tol = unique(tol); tol(diff(tol)<5) = [];
+    tor = unique(tor); tor(diff(tor)<5) = [];
 
     nstrides(trial,subj,1) = length(hsl);
     nstrides(trial,subj,2) = length(hsr);
@@ -141,12 +154,15 @@ for trial = 1:33
     
 %% Center of mass velocity
     vcom_raw = []; vcom = []; Pcom = [];
-    vcom_raw(:,1) = cumtrapz(tgrf,(grf(:,1))/actual_mass); % Donelan et al. 2002, med-lat
-    vcom_raw(:,2) = cumtrapz(tgrf,(grf(:,2))/actual_mass) - vwalks(trial); % Donelan et al. 2002, for-aft
-    vcom_raw(:,3) = cumtrapz(tgrf,(grf(:,3)-actual_mass*9.81)/actual_mass); % Donelan et al. 2002, vertical
+    % ------------------------------------------------- Donelan et al. 2002
+    vcom_raw(:,1) = cumtrapz(tgrf,(grf(:,1))/actual_mass); % ------ med-lat
+    % ------------------------------------------------------------- for-aft
+    vcom_raw(:,2) = cumtrapz(tgrf,(grf(:,2))/actual_mass) - vwalks(trial); 
+    % ------------------------------------------------------------ vertical
+    vcom_raw(:,3) = cumtrapz(tgrf,(grf(:,3)-actual_mass*9.81)/actual_mass); 
     
     p = nan(3,2);
-    for i = 1:3
+    for i = 3:-1:1
         p(i,:) = polyfit(hsl(1):hsl(end), vcom_raw(hsl(1):hsl(end),i)', 1);
         vcom(:,i) = vcom_raw(:,i) - polyval(p(i,:), 1:length(tgrf))';
     end
@@ -216,8 +232,11 @@ for trial = 1:33
 
     
     % delta velocity 
-    deltav(trial,subj,1) = mean(atan2d(Vcom(vupr,3), Vcom(vupr,2)) - atan2d(Vcom(vdownl,3), Vcom(vdownl,2)));
-    deltav(trial,subj,2) = mean(atan2d(Vcom(vupl(2:end),3), Vcom(vupl(2:end),2)) - atan2d(Vcom(vdownr(1:4),3), Vcom(vdownr(1:4),2)));
+    deltav(trial,subj,1) = mean(atan2d(Vcom(vupr,3), Vcom(vupr,2)) - ...
+                                   atan2d(Vcom(vdownl,3), Vcom(vdownl,2)));
+    deltav(trial,subj,2) = mean(atan2d(Vcom(vupl(2:end),3), ...
+                                                Vcom(vupl(2:end),2)) - ...
+                         atan2d(Vcom(vdownr(1:4),3), Vcom(vdownr(1:4),2)));
     
     %% Stride time
     % stride time (take length(grf) because things end with right
@@ -231,11 +250,14 @@ for trial = 1:33
     Pcom_mo(:,2) = interp1(tgrf,Pcom(:,2),tmoc);
 
     vcom_mo = interp1(tgrf, vcom, tmoc);
-    vcom_mo(:,2) = vcom_mo(:,2) + vwalks(trial); % relative to the lab frame
+    vcom_mo(:,2) = vcom_mo(:,2) + vwalks(trial); % relative to lab frame
 
     % alternative COM power: from pelvis velocity
-    Pcom_mo_alt = []; vcom_mo_alt = []; grf_mo = [];
-    grf_mo(:,1:3) = interp1(tgrf,grfl,tmoc); grf_mo(:,4:6) = interp1(tgrf,grfr,tmoc);
+    Pcom_mo_alt = []; 
+    vcom_mo_alt = []; 
+    grf_mo = [];
+    grf_mo(:,1:3) = interp1(tgrf,grfl,tmoc); 
+    grf_mo(:,4:6) = interp1(tgrf,grfr,tmoc);
     
     %% Peripheral work 
     segmentmass = mass(subj) * relsegmass;
@@ -435,7 +457,7 @@ function out = comvelocityevents(Vcom,hstohstohs)
 % Vcom signal. The first hs is the initial heel strike,  and the last hs is
 % the "closing" heel strike, usually coincident with the last sample of Vcom
 
-n = size(Vcom,1);
+% n = size(Vcom,1);
 
 % Determine the number of STEPS in the Vcom signal: 
 % length(hstohstohs) = 2*nsteps+1. 
@@ -463,7 +485,7 @@ to = hstohstohs(2:2:end);
 vcomevents = hs(1);  % indices of events of interest: first is the initial heel strike
 vcomeventsyms = {'s'}; % symbols used to mark these events on a plot. HS gets a square ('s')
 
-for ii = 1:nsteps  % loop over steps
+for ii = nsteps:-1:1  % loop over steps
     
     %% Mid-Double-Support
     vdup(1:(hs(ii)-1),:) = NaN;  % set anything before the current step to NaN
@@ -476,7 +498,7 @@ for ii = 1:nsteps  % loop over steps
     %% V-Up
     vdup(1:(imidds(ii)),:) = NaN; % cancel out times in the past
     vdup(round(mean([to(ii) hs(ii+1)])):end,:) = NaN; % cancel out times after roughly mid-step (halfway between toe off and heel strike)
-    [bla, blah] = max(atan2(vdup(:,3),abs(vdup(:,2)))); % find "vup", the steepest upward velocity of the COM
+    [~, blah] = max(atan2(vdup(:,3),abs(vdup(:,2)))); % find "vup", the steepest upward velocity of the COM
     ivup(ii) = blah;
         vdup = Vcom; % reset vdup
     
@@ -492,7 +514,7 @@ for ii = 1:nsteps  % loop over steps
 %     vdup(hs(ii+1):end,:) = NaN; % don't look too far this time...
     vdup(vdup(:,3)>0,:) = NaN;  % if the COM is rising, this can't be the steepest fall
     vdup(to(ii+1):end,:) = NaN; % don't look too far (end at next toe off)
-    [bla blah] = min( atan2(vdup(:,3),abs(vdup(:,2))) );  % find "vdn", the steepest downward COM velocity
+    [~, blah] = min( atan2(vdup(:,3),abs(vdup(:,2))) );  % find "vdn", the steepest downward COM velocity
     ivdn(ii) = blah ;
 %     if ~isempty(blah)
 %         ivdn(ii) = blah ;
@@ -512,7 +534,7 @@ for ii = 1:nsteps  % loop over steps
     % Concatenate all these events as: [previousevents, mid-double-support, toe-off, vup, mid-single-support, vdn, next-heel-strike]
     % First time, previous is [hs], so this yields [hs midds to vup midss vdn hs]
     vcomevents = [vcomevents', imidds(ii), to(ii), ivup(ii), imidss(ii), ivdn(ii), hs(ii+1)]';
-    vcomeventsyms = {vcomeventsyms{:}, '.', 'd', '^', 'x', 'v', 's' }';
+    vcomeventsyms = [vcomeventsyms(:)', {'.'}, {'d'}, {'^'}, {'x'}, {'v'}, {'s'} ]';
 end
 
 vcomeventVs = Vcom(vcomevents,:); % get the actual COM velocity at these events
@@ -584,9 +606,9 @@ yp(nrow-1,1:ncol)=(y(nrow,:)-y(nrow-2,:))/(2*dx);
 yp(nrow,1:ncol)=(y(nrow,:)-y(nrow-1,:))/dx;
 
 coef=[1 -8 0 8 -1];
-for i=3:nrow-2;
+for i=3:nrow-2
   yp(i,:)=(coef*y(i-2:i+2,:))/(12*dx);
-end;
+end
 
 %if flip; y=y';yp=yp';end;
 end
