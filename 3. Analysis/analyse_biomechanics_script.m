@@ -5,7 +5,7 @@
 
 %% Set Import and Export Directories 
 import_folder = fullfile(datafolder,'5 Strides Data files');
-export_folder = fullfile(datafolder,'All Strides Data files');
+export_folder = fullfile(codefolder,'3. Analysis');
 
 %% Settings
 subjects = 1:9;
@@ -382,7 +382,8 @@ missing = [c r];
 
 %% Saving
 cd(export_folder)
-save(['Wsoft_',date,'.mat'])
+save(['Wsoft_',date,'.mat'],'WCOMcoll','Wbodycoll','Wsoftcoll','Wjointcoll','Wjointtranscoll','Wankle','Wknee','Whip','Wjoint','Wjoint_pos','Wjoint_neg','Wjoint_trans','Wankle_trans','Wjoint_rot',...
+    'Wperi','Wcom','Wbody','Wbody_neg','Wbody_pos','Wperi_neg','Wsoft','Tstride','deltav','vcom_hs','vcom_hs_alt','FTI','Fpeak','nstrides','vwalks','mass','fsgrf','fsmoc');
 
 %% Functions
 function [Pper] = CalcPeripheralPower(segmentvelocity, rotenergy, segmenmass, vcom_mo, fsmo)
@@ -485,7 +486,13 @@ to = hstohstohs(2:2:end);
 vcomevents = hs(1);  % indices of events of interest: first is the initial heel strike
 vcomeventsyms = {'s'}; % symbols used to mark these events on a plot. HS gets a square ('s')
 
-for ii = nsteps:-1:1  % loop over steps
+% preallocate
+imidds  = nan(1,nsteps);
+ivup    = nan(1,nsteps);
+imidss  = nan(1,nsteps);
+ivdn    = nan(1,nsteps); 
+
+for ii = 1:nsteps  % loop over steps
     
     %% Mid-Double-Support
     vdup(1:(hs(ii)-1),:) = NaN;  % set anything before the current step to NaN

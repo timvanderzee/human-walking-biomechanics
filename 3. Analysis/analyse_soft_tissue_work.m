@@ -2,7 +2,7 @@
 % analyse_soft_tissue_work.m 
 % -------------------------------------------------------------------------
 
-folder = fullfile(datafolder,'All Strides Data files');
+% folder = fullfile(datafolder,'All Strides Data files');
 
 % folder where the files are that have been exported from Visual3D
 % % folder = uigetdir;
@@ -14,7 +14,7 @@ folder = fullfile(datafolder,'All Strides Data files');
 if ishandle(1), close(1); end; figure(1)
 
 %% Parameters
-cd(folder)
+cd(export_folder)
 load(['Wsoft_',date,'.mat'])
 terms = {'Collision', 'Soft tissue', 'Negative'};
 old_order = 0;
